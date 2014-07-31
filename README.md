@@ -1,11 +1,11 @@
-Cytus模拟器
+Cytus Simulator
 ============
-Cytus是台湾雷亚公司(`Rayark Inc.`)出品的音乐游戏  
-官网: [http://rayark.com/g/cytus/](http://rayark.com/g/cytus/)   
+Cytus is a music rhythm game produced by `Rayark Inc.`   
+Official Website: [http://rayark.com/g/cytus/](http://rayark.com/g/cytus/)   
 
-本程序使用Java语言,在Windows环境下编写  
+This program is written in Java and tested on Windows.  
 
-使用的外部程序库
+Dependencies
 ------------
 - [JMF(Java Media Framework,Oracle Technology Network,`v2.1.1e`)](http://www.oracle.com/technetwork/java/javase/download-142937.html)
 - [JLayer(`v1.0.1`)](http://www.javazoom.net/javalayer/javalayer.html)
@@ -16,16 +16,16 @@ Cytus是台湾雷亚公司(`Rayark Inc.`)出品的音乐游戏
 - [EZMorph(`v1.0.6`)](http://sourceforge.net/projects/ezmorph/files/ezmorph/)
 - [Json-lib(`v2.4`)](http://sourceforge.net/projects/json-lib/)
 
-运行
+To Run
 ------------
-确保JRE版本在`1.8.0`或以上  
-主程序入口: cytus.Main  
+JRE version 1.8.0 or above is required  
+Main class: cytus.Main  
 > java cytus.Main &lt;songtitle&gt;
 
-需要在相同文件夹下加入assets子文件夹作为游戏数据才能正常运行  
-(出于版权原因,不提供assets相关文件的下载)  
+Put *assets*  in the same folder as game data  
+(Downloads of *assets* are NOT provided due to copyright issues)
 
-### assets目录结构
+### Folder Structure of *assets*
 - assets  
 	- /chapters  
 	- /common  
@@ -81,67 +81,68 @@ Cytus是台湾雷亚公司(`Rayark Inc.`)出品的音乐游戏
 		- /...
 
 
-### Preferences.txt参数说明
+### Preferences.txt
 - convertmp3
-	- 描述:是否将mp3转换成wav格式再播放(转换后的文件为test.wav)  
-	- 值: 0,1  
-	- 默认值: 1
+	- Description: Determines whether the mp3 file should be first converted into wav file(test.wav)
+	- Value: 0,1  
+	- Default Value: 1
 
 ----------
 
 - bg
-	- 描述:是否开启背景
-		- 开启背景时,程序会寻找歌曲文件夹中的背景文件  
-		- 格式: <songtitle>.png 或 <songtitle>_bg.png 或 bg.png  
-	- 值: 0,1  
-	- 默认值: 1
+	- Description: Determines whether the background should be shown
+		- If on, the program will search for background files in the song folder  
+		-  **&lt;songtitle&gt;.png** | **&lt;songtitle&gt;_bg.png** | **bg.png** 
+	- Value: 0,1  
+	- Default Value: 1
 
 ----------
 
 - note_effect
-	- 描述:是否开启打击音效 
-	- 值: 0,1  
-	- 默认值: 1
+	- Description: Determines whether the hitsounds should be played  
+	- Value: 0,1  
+	- Default Value: 1
 
 ----------
 
 - popupmode
-	- 描述:设置note的显示方式,0为None,1为Default,2为Grouped  
-	- 值: 0,1,2  
-	- 默认值: 2
+	- Description: Change the display style of the notes(0-None,1-Default,2-Grouped)  
+	- Value: 0,1,2  
+	- Default Value: 2
 
 ----------
 
 - quality
-	- 描述:设置绘画品质(1为低,2为中,3为高)  
-	- 值: 1,2,3  
-	- 默认值: 1
+	- Description: Set the quality of graphics(1-Low,2-Medium,3-High)  
+	- Value: 1,2,3  
+	- Default Value: 1
 
 ----------
 
 - mask
-	- 描述:是否开启脉搏效果,即屏幕左右两边的黑色区域  
-	- 值: 0,1  
-	- 默认值：1
+	- Description: Determines whether the beating gray mask(on both sides of the screen) should be shown  
+	- Value: 0,1  
+	- Default Value：1
 
-其他事项
+Others
 -------------
 
-### 运行截图
+### Screenshot
 ![Screenshot1](https://github.com/Dewott/cytus/blob/master/ss1.jpg) 
 
-![Screenshot2](https://github.com/Dewott/cytus/blob/master/ss2.jpg)
+![Screenshot2](https://github.com/Dewott/cytus/blob/master/ss2.jpg) 
 
-### 运行视频
+
+### Preview Video
 [http://pan.baidu.com/s/1jGmPOou](http://pan.baidu.com/s/1jGmPOou)
 
 ### ext/osu
-cytus谱面和osu!谱面互相转换(测试中)  
+Conversion between Cytus patterns and osu! beatmaps(beta)  
 
 ### Editor
-谱面编辑器(制作中) 
+Under construction
 
-### 关于作者
-程序作者: [Dewott(@GitHub)](https://github.com/Dewott/cytus)   
-新浪微博: [@双贝君](http://weibo.com/Dewott502/)  
-开始时间: 2014-01-27
+### About author
+Author: [Dewott(@GitHub)](https://github.com/Dewott/cytus)   
+Sina Weibo: [@双贝君](http://weibo.com/Dewott502/)  
+Begin time: 2014-01-27

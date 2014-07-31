@@ -14,6 +14,17 @@ public class ImageUtil {
 		return img;
 	}
 
+	public static BufferedImage scale(BufferedImage src, double scale) {
+		int w = (int) (src.getWidth() * scale);
+		int h = (int) (src.getHeight() * scale);
+		BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = (Graphics2D) img.getGraphics();
+		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+				RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+		g.drawImage(src, 0, 0, w, h, null);
+		return img;
+	}
+
 	public static Image transparent(Image src, float alpha) {
 		int w = src.getWidth(null);
 		int h = src.getHeight(null);

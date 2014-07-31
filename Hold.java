@@ -24,13 +24,13 @@ public class Hold extends Note {
 		if (page != page2)
 			etime = (page + 1) * p.beat - p.offset - 1e-3;
 
-		y2 = (int) ((etime + p.offset) % p.beat / p.beat * 352);
+		y2 = (int) ((etime + p.offset) % p.beat / p.beat * 470);
 
 		if (page % 2 == 0)
-			y2 = 352 - y2;
+			y2 = 470 - y2;
 
-		y2 += 64;
-		sy = (int) (hold / p.beat * 200) + 206;
+		y2 += 85;
+		sy = (int) (hold / p.beat * 300) + 309;
 
 		head = new Sprite("beat_hold_active");
 		head.moveTo(x, y);
@@ -80,17 +80,17 @@ public class Hold extends Note {
 				}
 			}
 
-			g.drawImage(bar, x - 25, y, x + 25, y2, 0, sy, 50, 0, null);
+			g.drawImage(bar, x - 37, y, x + 37, y2, 0, sy, 75, 0, null);
 			hold1.paint(g, p.time);
 			hold2.paint(g, p.time);
 			bshadow.paint(g, p.time);
 			int cpage = (int) ((p.time + p.offset) / p.beat);
-			int liney = (int) ((p.time + p.offset) % p.beat / p.beat * 352);
+			int liney = (int) ((p.time + p.offset) % p.beat / p.beat * 470);
 
 			if (cpage % 2 == 0)
-				liney = 352 - liney;
+				liney = 470 - liney;
 
-			liney += 64;
+			liney += 85;
 			shadow.moveTo(x, liney);
 			shadow.paint(g, p.time);
 			light2.moveTo(x, liney);
@@ -103,14 +103,14 @@ public class Hold extends Note {
 			if (time > etime)
 				time = etime;
 
-			int csy = (int) ((time - stime) / p.beat * 200) + 206;
-			int liney = (int) ((time + p.offset) % p.beat / p.beat * 352);
+			int csy = (int) ((time - stime) / p.beat * 300) + 309;
+			int liney = (int) ((time + p.offset) % p.beat / p.beat * 470);
 
 			if (page % 2 == 0)
-				liney = 352 - liney;
+				liney = 470 - liney;
 
-			liney += 64;
-			g.drawImage(bar, x - 25, y, x + 25, liney, 0, csy, 50, 0, null);
+			liney += 85;
+			g.drawImage(bar, x - 37, y, x + 37, liney, 0, csy, 75, 0, null);
 			head.paint(g, p.time);
 
 			if (p.page < page)
@@ -125,8 +125,9 @@ public class Hold extends Note {
 		a1.moveTo(x, y);
 		Animation a2 = AnimationPreset.get("critical_explosion");
 		a2.moveTo(x, y2);
-		a2.scale(0.75, 0.75);
+		a2.prescale(0.6);
 		Animation a3 = AnimationPreset.get("judge_perfect");
+		a3.prescale(0.8);
 		a3.moveTo(x, y2);
 		a1.play(p, etime);
 		a2.play(p, etime);
@@ -138,9 +139,9 @@ public class Hold extends Note {
 		int page2 = (int) ((etime + p.offset) / p.beat);
 		if (page != page2)
 			etime = (page + 1) * p.beat - p.offset - 1e-3;
-		y2 = (int) ((etime + p.offset) % p.beat / p.beat * 352);
+		y2 = (int) ((etime + p.offset) % p.beat / p.beat * 470);
 		if (page % 2 == 0)
-			y2 = 352 - y2;
-		y2 += 64;
+			y2 = 470 - y2;
+		y2 += 85;
 	}
 }

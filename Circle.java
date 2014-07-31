@@ -50,7 +50,7 @@ public class Circle extends Note {
 
 		default: // None
 			circle.addTransform(new LinearAlphaTransform(ntime1, ntime1
-					+ p.beat / 2, 0, 1));
+					+ p.beat / 2, 0, 0.8));
 			nact.addTransform(new LinearAlphaTransform(ntime1, ntime1 + p.beat
 					/ 2, 0, 0.8));
 			circle.addTransform(new BeatTransform(ntime2, p.offset, p.beat / 2));
@@ -85,8 +85,9 @@ public class Circle extends Note {
 
 		Animation a1 = AnimationPreset.get("critical_explosion");
 		a1.moveTo(x, y);
-		a1.scale(0.6, 0.6);
+		a1.prescale(0.6);
 		Animation a2 = AnimationPreset.get("judge_perfect");
+		a2.prescale(0.8);
 		a2.moveTo(x, y);
 		Animation a3 = new Animation(
 				page % 2 == 0 ? "red_blow" : "yellow_blow", stime,

@@ -43,10 +43,10 @@ public class Link extends Note {
 			for (i = n - 1; i > 0; i--)
 				if (nodes.get(i).stime >= p.time) {
 					double angle = calcAngle(i - 1, i);
-					double x1 = nodes.get(i - 1).x + 24 * Math.sin(angle);
-					double y1 = nodes.get(i - 1).y - 24 * Math.cos(angle);
-					double x2 = nodes.get(i).x - 24 * Math.sin(angle);
-					double y2 = nodes.get(i).y + 24 * Math.cos(angle);
+					double x1 = nodes.get(i - 1).x + 36 * Math.sin(angle);
+					double y1 = nodes.get(i - 1).y - 36 * Math.cos(angle);
+					double x2 = nodes.get(i).x - 36 * Math.sin(angle);
+					double y2 = nodes.get(i).y + 36 * Math.cos(angle);
 					Line2D.Double line = new Line2D.Double(x1, y1, x2, y2);
 					g.draw(line);
 
@@ -97,10 +97,10 @@ public class Link extends Note {
 
 			for (i = 0; i < end - 1; i++) {
 				double angle = calcAngle(i, i + 1);
-				double x1 = nodes.get(i).x + 24 * Math.sin(angle);
-				double y1 = nodes.get(i).y - 24 * Math.cos(angle);
-				double x2 = nodes.get(i + 1).x - 24 * Math.sin(angle);
-				double y2 = nodes.get(i + 1).y + 24 * Math.cos(angle);
+				double x1 = nodes.get(i).x + 36 * Math.sin(angle);
+				double y1 = nodes.get(i).y - 36 * Math.cos(angle);
+				double x2 = nodes.get(i + 1).x - 36 * Math.sin(angle);
+				double y2 = nodes.get(i + 1).y + 36 * Math.cos(angle);
 				Line2D.Double line = new Line2D.Double(x1, y1, x2, y2);
 				g.draw(line);
 			}
@@ -179,46 +179,51 @@ public class Link extends Note {
 			this.p = Link.this.p;
 			this.x = x;
 			this.y = y;
+			this.page = Link.this.page;
 			this.stime = time;
 			this.etime = time;
 
 			nflash = AnimationPreset.get("node_flash");
 			nflash.moveTo(x, y);
+			nflash.prescale(0.8);
 			nflash.setStartTime(page * p.beat - p.offset);
 			nflash.setEndTime(time);
 
 			nexp = AnimationPreset.get("critical_explosion");
 			nexp.moveTo(x, y);
 			nexp.play(p, time);
-			nexp.scale(0.6, 0.6);
+			nexp.prescale(0.6);
 
 			perfect = AnimationPreset.get("judge_perfect");
 			perfect.moveTo(x, y);
 			perfect.play(p, time);
-			perfect.scale(0.6, 0.6);
+			perfect.prescale(0.6);
 
-			ps = new Sprite("node_flash_05");
+			ps = new Sprite("node_flash_04");
 			ps.moveTo(x, y);
+			ps.bright();
+			ps.prescale(0.8);
 			ps.addTransform(new LinearAlphaTransform(time - p.beat, time
 					- p.beat / 2, 0, 1));
 
 			nps = new Sprite("node_flash_01");
 			nps.moveTo(x, y);
+			nps.prescale(0.8);
 			nps.addTransform(new LinearAlphaTransform(time - p.beat, time
 					- p.beat / 2, 0, 1));
 		}
 
 		public void paint(Graphics2D g) {
 			if (page == p.page) {
-				if (nflash.ended(p.time + p.beat))
+				if (nflash.ended(p.time + p.beat / 2))
 					ps.paint(g, p.time);
 				else
 					nflash.paint(g, p.time);
 			} else
 				nps.paint(g, p.time);
 		}
-		
-		public void remove(){
+
+		public void remove() {
 		}
 	}
 }

@@ -42,11 +42,12 @@ public class Pattern {
 			} catch (Exception e) {
 			}
 		}
-		try{
-		    cytus.animation.SpriteLibrary.load();
-            cytus.animation.AnimationPreset.load();
-            cytus.animation.FontLibrary.load();
-		}catch(Exception e){}
+		try {
+			cytus.animation.SpriteLibrary.load();
+			cytus.animation.AnimationPreset.load();
+			cytus.animation.FontLibrary.load();
+		} catch (Exception e) {
+		}
 	}
 
 	public double offset = 0, beat = 0, time = 0;
@@ -62,13 +63,15 @@ public class Pattern {
 	Image bg = null, line = null;
 	ComboSmallPop pop = null;
 	MaskBeat mask = null;
-	public BufferedImage buf = new BufferedImage(720, 480,
+	public BufferedImage buf = new BufferedImage(960, 720,
 			BufferedImage.TYPE_INT_ARGB);
 
 	public Player player = null;
 	JSPlayer sound = null;
-    
-	public Pattern(){}
+
+	public Pattern() {
+	}
+
 	public Pattern(String name, String diff) throws Exception {
 		BufferedReader in = new BufferedReader(new FileReader(path + name + "/"
 				+ name + "." + diff + ".txt"));
@@ -112,13 +115,13 @@ public class Pattern {
 			else
 				bg = ImageIO.read(new File(path + name + "/" + name + ".png"));
 
-			bg = bg.getScaledInstance(720, 480, Image.SCALE_SMOOTH);
+			bg = bg.getScaledInstance(960, 640, Image.SCALE_SMOOTH);
 			bg = ImageUtil.transparent(bg, 0.8f);
 		} else {
-			bg = new BufferedImage(720, 480, BufferedImage.TYPE_INT_ARGB);
+			bg = new BufferedImage(960, 720, BufferedImage.TYPE_INT_ARGB);
 			Graphics g = bg.getGraphics();
 			g.setColor(Color.WHITE);
-			g.fillRect(0, 0, 720, 480);
+			g.fillRect(0, 0, 960, 720);
 			g.dispose();
 		}
 
@@ -128,10 +131,11 @@ public class Pattern {
 		BufferedImage white = SpriteLibrary.get("gameplay_bg_mask");
 
 		Graphics g = bg.getGraphics();
-		g.drawImage(white, 0, 0, 720, 48, null);
-		g.drawImage(mask1, 0, 0, 720, 48, null);
-		g.drawImage(mask2, 190, 10, 340, 48, null);
-		g.drawImage(title, 190, -10, null);
+		g.drawImage(white, 0, 0, 960, 64, null);
+		g.drawImage(mask2, 0, 0, 960, 64, null);
+		g.drawImage(mask1, 0, 0, null);
+		g.drawImage(mask1, 960, 0, 664, 65, 0, 0, 296, 65, null);
+		g.drawImage(title, 310, 0, null);
 		line = SpriteLibrary.get("scanline");
 
 		sound = new JSPlayer("assets/sounds/beat1.wav");
@@ -166,8 +170,8 @@ public class Pattern {
 	}
 
 	public void addCombo() {
-	    if (ncount == 1) {
-		    score = 1000000;
+		if (ncount == 1) {
+			score = 1000000;
 			tp = 100;
 			return;
 		}
@@ -197,8 +201,9 @@ public class Pattern {
 		while (true) {
 			int drawtime = paint();
 			g.drawImage(buf, 0, 0, null);
-			if (drawtime <= 16e6)
-				Thread.sleep((int) (16 - drawtime / 1e6));
+			/*
+			 * if (drawtime <= 16e6) Thread.sleep((int) (16 - drawtime / 1e6));
+			 */
 		}
 	}
 
@@ -206,6 +211,11 @@ public class Pattern {
 		notes.clear();
 		animqueue.clear();
 		Collections.sort(copy,(a,b)->Double.compare(a.stime,b.stime));
+		/*Collections.sort(copy,new Comparator<Note>(){
+		  public int compare(Note n1,Note n2){
+		    return Double.compare(n1.stime,n2.stime);
+		  }
+		});*/
 		notes.addAll(copy);
 		ncount = 0;
 		for (Note n : notes) {
@@ -230,12 +240,12 @@ public class Pattern {
 			mask.paint(gg, time);
 
 		page = (int) ((time + offset) / beat);
-		liney = (int) (((time + offset) % beat / beat) * 352);
+		liney = (int) (((time + offset) % beat / beat) * 470);
 
 		if (page % 2 == 0)
-			liney = 352 - liney;
+			liney = 470 - liney;
 
-		liney += 64;
+		liney += 85;
 
 		LinkedList<Animation> del = new LinkedList<Animation>();
 
@@ -260,8 +270,8 @@ public class Pattern {
 		notes.removeAll(del2);
 
 		if (notes.size() > 0) {
-			int end = -1; // current page's end
-			int npstart = -1, npend = -1; // Next page's start&end
+			int end = -1; // end of current page
+			int npstart = -1, npend = -1; // start&end of next page
 			int i = 0;
 
 			for (i = 0; i < notes.size(); i++) {
@@ -299,15 +309,15 @@ public class Pattern {
 			BufferedImage bg = SpriteLibrary.get("combo_small_bg");
 			double scale = pop != null ? pop.scale(time) : 1;
 			int w1 = (int) (250 * pop.scale(time));
-			gg.drawImage(bg, 360 - w1 / 2, 28, w1, 28, null);
-			gg.drawImage(text, 270, 30, 87, 25, null);
+			gg.drawImage(bg, 480 - w1 / 2, 44, w1, 28, null);
+			gg.drawImage(text, 370, 44, 92, 27, null);
 			BufferedImage cp = FontLibrary.getComboSmall(combo);
 			int w2 = (int) (cp.getWidth() * scale), h2 = (int) (cp.getHeight() * scale);
-			gg.drawImage(cp, 410 - w2 / 2, 41 - h2 / 2, w2, h2, null);
+			gg.drawImage(cp, 550 - w2 / 2, 58 - h2 / 2, w2, h2, null);
 		}
 
 		BufferedImage sp = FontLibrary.getScore(score);
-		gg.drawImage(sp, 720 - sp.getWidth(), 4, null);
+		gg.drawImage(sp, 960 - sp.getWidth(), 4, null);
 
 		long mtime2 = System.nanoTime();
 		double fps = 1e9 / (mtime2 - mtime1);
@@ -348,19 +358,19 @@ public class Pattern {
 				s.nextInt();
 				s.nextInt();
 				double time = s.nextDouble();
-				int y = (int) ((time + offset) % beat / beat * 352);
+				int y = (int) ((time + offset) % beat / beat * 470);
 				s.nextInt();
-				int x = (int) (s.nextDouble() * 600);
+				int x = (int) (s.nextDouble() * 800);
 				int page = (int) ((time + offset) / beat);
 				int next = s.nextInt();
 				double hold = s.nextDouble();
 				s.close();
 
 				if (page % 2 == 0)
-					y = 352 - y;
+					y = 470 - y;
 
-				x += 60;
-				y += 64;
+				x += 80;
+				y += 85;
 
 				if ((next == -1) && (hold != 0)) {
 					notes.add(new Hold(Pattern.this, x, y, time, hold));
@@ -378,25 +388,27 @@ public class Pattern {
 
 			for (int i = 0; i < ncount; i++)
 				if (v[i] && (data[i][3] != -1)) {
-				    Link link=new Link(Pattern.this);
+					Link link = new Link(Pattern.this);
 					int p = i;
 
 					while (data[p][3] != -1) {
 						v[p] = false;
-						link.nodes.add(link.new Node((int)data[p][0],(int)data[p][1],data[p][2]));
+						link.nodes.add(link.new Node((int) data[p][0],
+								(int) data[p][1], data[p][2]));
 						p = (int) data[p][3];
 					}
 
 					v[p] = false;
-					link.nodes.add(link.new Node((int)data[p][0],(int)data[p][1],data[p][2]));
+					link.nodes.add(link.new Node((int) data[p][0],
+							(int) data[p][1], data[p][2]));
 					link.recalc();
 					notes.add(link);
 				}
 
 			for (int i = 0; i < ncount; i++)
 				if (v[i])
-					notes.add(new Circle(Pattern.this, (int)data[i][0], (int)data[i][1],
-							data[i][2]));
+					notes.add(new Circle(Pattern.this, (int) data[i][0],
+							(int) data[i][1], data[i][2]));
 		}
 	}
 
@@ -421,12 +433,13 @@ public class Pattern {
 				if (str.indexOf("LINK") != -1) {
 					str = str.substring(5);
 					Scanner s = new Scanner(str);
-					Link link=new Link(Pattern.this);
+					Link link = new Link(Pattern.this);
 
 					while (s.hasNext()) {
 						int p = s.nextInt();
 						v[p] = false;
-						link.nodes.add(link.new Node((int)data[p][0],(int)data[p][1],data[p][2]));
+						link.nodes.add(link.new Node((int) data[p][0],
+								(int) data[p][1], data[p][2]));
 					}
 
 					link.recalc();
@@ -442,16 +455,16 @@ public class Pattern {
 				s.nextInt();
 				double time = s.nextDouble();
 				int page = (int) ((time + offset) / beat);
-				int y = (int) ((time + offset) % beat / beat * 352);
-				int x = (int) (s.nextDouble() * 600);
+				int y = (int) ((time + offset) % beat / beat * 470);
+				int x = (int) (s.nextDouble() * 800);
 				double hold = s.nextDouble();
 				s.close();
 
 				if (page % 2 == 0)
-					y = 352 - y;
+					y = 470 - y;
 
-				x += 60;
-				y += 64;
+				x += 80;
+				y += 85;
 
 				if (hold != 0) {
 					notes.add(new Hold(Pattern.this, x, y, time, hold));
@@ -467,8 +480,8 @@ public class Pattern {
 
 			for (int i = 0; i < count; i++)
 				if (v[i])
-					notes.add(new Circle(Pattern.this, (int)data[i][0], (int)data[i][1],
-							data[i][2]));
+					notes.add(new Circle(Pattern.this, (int) data[i][0],
+							(int) data[i][1], data[i][2]));
 		}
 	}
 
@@ -492,19 +505,18 @@ public class Pattern {
 					range[lcount][1] = count + l.n;
 					lcount++;
 
-					for (Link.Node node:l.nodes){
+					for (Link.Node node : l.nodes) {
 						out.print("NOTE\t");
 						out.print((count++) + "\t");
 						out.print(df.format(node.stime) + "\t");
-						out.print(df.format((node.x - 60) / 600.0)
-								+ "\t");
+						out.print(df.format((node.x - 80) / 800.0) + "\t");
 						out.println("0.000000");
 					}
 				} else {
 					out.print("NOTE\t");
 					out.print((count++) + "\t");
 					out.print(df.format(n.stime) + "\t");
-					out.print(df.format((n.x - 60) / 600.0) + "\t");
+					out.print(df.format((n.x - 80) / 800.0) + "\t");
 					out.println(df.format((n.etime - n.stime)));
 				}
 			}
