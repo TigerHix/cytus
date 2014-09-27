@@ -13,10 +13,7 @@ public abstract class Note {
 	public abstract void remove();
 
 	public void recalc() {
-		page = (int) ((stime + p.offset) / p.beat);
-		y = (int) (((stime + p.offset) % p.beat / p.beat) * 470);
-		if (page % 2 == 0)
-			y = 470 - y;
-		y += 85;
+		page = p.calcPage(stime);
+		y = p.calcY(stime);
 	}
 }

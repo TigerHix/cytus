@@ -84,13 +84,14 @@ Put *assets*  in the same folder as game data
 ### Preferences.txt
 - convertmp3
 	- Description: Determines whether the mp3 file should be first converted into wav file(test.wav)
+	- **NOTE:JMF will probably refuse to work if it is 0**
 	- Value: 0,1  
 	- Default Value: 1
 
 ----------
 
 - bg
-	- Description: Determines whether the background should be shown
+	- Description: Enable/Disable background
 		- If on, the program will search for background files in the song folder  
 		-  **&lt;songtitle&gt;.png** | **&lt;songtitle&gt;_bg.png** | **bg.png** 
 	- Value: 0,1  
@@ -99,7 +100,7 @@ Put *assets*  in the same folder as game data
 ----------
 
 - note_effect
-	- Description: Determines whether the hitsounds should be played  
+	- Description: Enable/Disable hitsound 
 	- Value: 0,1  
 	- Default Value: 1
 
@@ -119,10 +120,9 @@ Put *assets*  in the same folder as game data
 
 ----------
 
-- mask
-	- Description: Determines whether the beating gray mask(on both sides of the screen) should be shown  
-	- Value: 0,1  
-	- Default Value：1
+- width&height
+    - Description: Set window size
+    - Default Value:960 & 640
 
 Others
 -------------

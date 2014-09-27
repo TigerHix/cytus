@@ -119,7 +119,7 @@ public class Sprite {
 		childs.remove(s);
 	}
 
-	public void bright() {
+	public void brighten() {
 		if (!bright) {
 			bright = true;
 

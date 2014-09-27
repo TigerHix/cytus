@@ -10,14 +10,15 @@ public class Main extends JFrame {
 	public Main(String str) throws Exception {
 		super("Cytus");
 		System.setProperty("sun.java2d.opengl", "true");
-		setSize(966, 648);
+		Pattern p = new Pattern(str, "hard");
+		setSize(Pattern.WIDTH + 6, Pattern.HEIGHT + 8);
 		setResizable(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-		setLocation((d.width - 966) / 2, (d.height - 648) / 2);
+		setLocation((d.width - getWidth()) / 2, (d.height - getHeight()) / 2);
 		setVisible(true);
 		Graphics2D g = (Graphics2D) getContentPane().getGraphics();
-		new Pattern(str, "hard").start(g);
+		p.start(g);
 	}
 
 	public static void main(String args[]) throws Exception {

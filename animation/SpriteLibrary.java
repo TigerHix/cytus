@@ -18,15 +18,17 @@ public class SpriteLibrary {
 		String flist[] = new String[] { "animation_1", "animation_2", "common",
 				"common_2", "common_add" };
 
-		LinkedList<String> noteobj = new LinkedList<String>();
+		HashMap<String, Double> objlist = new HashMap<String, Double>();
 		BufferedReader r1 = new BufferedReader(new FileReader(
-				"animation/noteobj.txt"));
+				"animation/objlist.txt"));
 		String str1 = r1.readLine();
 
 		while (str1 != null) {
-			noteobj.add(str1);
+			String pair[] = str1.split("\\t");
+			objlist.put(pair[0], Double.parseDouble(pair[1]) * Pattern.SIZE_FIX);
 			str1 = r1.readLine();
 		}
+		r1.close();
 
 		for (int i = 0; i < 5; i++) {
 			BufferedImage src = ImageIO.read(new File("assets/ui/GamePlay/"
@@ -52,6 +54,9 @@ public class SpriteLibrary {
 
 			while (t.hasNext()) {
 				String key = (String) t.next();
+				if (!objlist.containsKey(key))
+					continue;
+
 				JSONObject frame = JSONObject.fromObject(obj.getString(key));
 				JSONObject fpos = JSONObject.fromObject(frame
 						.getString("frame"));
@@ -85,27 +90,17 @@ public class SpriteLibrary {
 				BufferedImage out = new BufferedImage(srcw, srch,
 						BufferedImage.TYPE_INT_ARGB);
 				out.getGraphics().drawImage(img, spsx, spsy, spsw, spsh, null);
-				if (noteobj.contains(key))
-					out = ImageUtil.scale(out, 1.5);
 
-				if (key.indexOf("light_add2") != -1) {
-					out = ImageUtil.scale(out, 2);
-					ImageUtil.brighter(out, 1.25);
-				}
-
+				out = ImageUtil.scale(out, objlist.get(key));
 				map.put(key, out);
 			}
 		}
 
-		BufferedImage scanline = new BufferedImage(960, 48,
-				BufferedImage.TYPE_INT_ARGB);
 		BufferedImage t = map.get("bar");
-
-		for (int i = 0; i < 20; i++)
-			scanline.getGraphics().drawImage(t, i * 48, 0, null);
-
-		map.remove("bar");
-		t = null;
+		BufferedImage scanline = new BufferedImage(Pattern.WIDTH,
+				t.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		for (int i = 0; i <= Pattern.WIDTH / t.getWidth(); i++)
+			scanline.getGraphics().drawImage(t, i * t.getWidth(), 0, null);
 
 		map.put("scanline", scanline);
 

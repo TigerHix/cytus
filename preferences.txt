@@ -1,6 +1,7 @@
-convertmp3=1
+height=640
+width=960
+quality=1
 bg=1
 note_effect=1
 popupmode=2
-quality=1
-mask=1
+convertmp3=1

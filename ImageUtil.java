@@ -15,6 +15,8 @@ public class ImageUtil {
 	}
 
 	public static BufferedImage scale(BufferedImage src, double scale) {
+		if (scale == 1)
+			return src;
 		int w = (int) (src.getWidth() * scale);
 		int h = (int) (src.getHeight() * scale);
 		BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
@@ -22,18 +24,6 @@ public class ImageUtil {
 		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
 				RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 		g.drawImage(src, 0, 0, w, h, null);
-		return img;
-	}
-
-	public static Image transparent(Image src, float alpha) {
-		int w = src.getWidth(null);
-		int h = src.getHeight(null);
-		BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g = (Graphics2D) img.getGraphics();
-		g.drawImage(src, 0, 0, null);
-		g.setComposite(AlphaComposite.SrcOver.derive(alpha));
-		g.setColor(Color.WHITE);
-		g.fillRect(0, 0, w, h);
 		g.dispose();
 		return img;
 	}
@@ -66,7 +56,7 @@ public class ImageUtil {
 		return (a << 24) | (r << 16) | (g << 8) | b;
 	}
 
-	public static int reverseRGB(int rgb) {
+	public static int inverseRGB(int rgb) {
 		int a = (rgb >> 24) & 0xFF;
 		int r = 255 - (rgb >> 16) & 0xFF;
 		int g = 255 - (rgb >> 8) & 0xFF;
@@ -95,12 +85,12 @@ public class ImageUtil {
 		img.getRaster().setDataElements(0, 0, w, h, data);
 	}
 
-	public static void reverseColor(BufferedImage img) {
+	public static void inverseColor(BufferedImage img) {
 		int w = img.getWidth(), h = img.getHeight();
 		int data[] = (int[]) img.getRaster().getDataElements(0, 0, w, h, null);
 
 		for (int i = 0; i < data.length; i++)
-			data[i] = reverseRGB(data[i]);
+			data[i] = inverseRGB(data[i]);
 
 		img.getRaster().setDataElements(0, 0, w, h, data);
 	}

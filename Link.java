@@ -38,15 +38,16 @@ public class Link extends Note {
 
 	public void paint(Graphics2D g) {
 		int i = 0;
+		int nodesize = (int) (36 * Pattern.SIZE_FIX);
 
 		if (p.time >= stime) {
 			for (i = n - 1; i > 0; i--)
 				if (nodes.get(i).stime >= p.time) {
 					double angle = calcAngle(i - 1, i);
-					double x1 = nodes.get(i - 1).x + 36 * Math.sin(angle);
-					double y1 = nodes.get(i - 1).y - 36 * Math.cos(angle);
-					double x2 = nodes.get(i).x - 36 * Math.sin(angle);
-					double y2 = nodes.get(i).y + 36 * Math.cos(angle);
+					double x1 = nodes.get(i - 1).x + nodesize * Math.sin(angle);
+					double y1 = nodes.get(i - 1).y - nodesize * Math.cos(angle);
+					double x2 = nodes.get(i).x - nodesize * Math.sin(angle);
+					double y2 = nodes.get(i).y + nodesize * Math.cos(angle);
 					Line2D.Double line = new Line2D.Double(x1, y1, x2, y2);
 					g.draw(line);
 
@@ -85,7 +86,7 @@ public class Link extends Note {
 			dlight.paint(g, p.time);
 		} else {
 			if (p.time + p.beat / 2 >= nodes.get(0).stime)
-				head.bright();
+				head.brighten();
 
 			int end = n;
 
@@ -97,10 +98,10 @@ public class Link extends Note {
 
 			for (i = 0; i < end - 1; i++) {
 				double angle = calcAngle(i, i + 1);
-				double x1 = nodes.get(i).x + 36 * Math.sin(angle);
-				double y1 = nodes.get(i).y - 36 * Math.cos(angle);
-				double x2 = nodes.get(i + 1).x - 36 * Math.sin(angle);
-				double y2 = nodes.get(i + 1).y + 36 * Math.cos(angle);
+				double x1 = nodes.get(i).x + nodesize * Math.sin(angle);
+				double y1 = nodes.get(i).y - nodesize * Math.cos(angle);
+				double x2 = nodes.get(i + 1).x - nodesize * Math.sin(angle);
+				double y2 = nodes.get(i + 1).y + nodesize * Math.cos(angle);
 				Line2D.Double line = new Line2D.Double(x1, y1, x2, y2);
 				g.draw(line);
 			}
@@ -135,7 +136,7 @@ public class Link extends Note {
 		y = nodes.get(0).y;
 		stime = nodes.get(0).stime;
 		etime = nodes.get(n - 1).stime;
-		page = (int) ((stime + p.offset) / p.beat);
+		page = p.calcPage(stime);
 
 		double ntime = page * p.beat - p.offset;
 		head.clearTransforms();
@@ -143,6 +144,8 @@ public class Link extends Note {
 				- p.beat / 2, 0, 1));
 
 		switch (Pattern.prefs.get("popupmode")) {
+		case 0:// None
+			break;
 		case 1:// Default
 			head.addTransform(new LinearScaleTransform(stime - p.beat / 2,
 					stime, 0.8, 1));
@@ -157,7 +160,6 @@ public class Link extends Note {
 		arrexp.moveTo(nodes.get(n - 1).x, nodes.get(n - 1).y);
 		arrexp.rotate(calcAngle(n - 2, n - 1));
 		arrexp.play(p, etime);
-
 		blow = new Animation("drag_head_blow", etime, etime + 1 / 3.0);
 		blow.moveTo(nodes.get(n - 1).x, nodes.get(n - 1).y);
 		blow.clearTransforms();
@@ -179,43 +181,39 @@ public class Link extends Note {
 			this.p = Link.this.p;
 			this.x = x;
 			this.y = y;
-			this.page = Link.this.page;
+			this.page = p.calcPage(time);
 			this.stime = time;
 			this.etime = time;
 
 			nflash = AnimationPreset.get("node_flash");
 			nflash.moveTo(x, y);
-			nflash.prescale(0.8);
 			nflash.setStartTime(page * p.beat - p.offset);
-			nflash.setEndTime(time);
+			nflash.setEndTime(nflash.getStartTime() + 0.333);
 
 			nexp = AnimationPreset.get("critical_explosion");
 			nexp.moveTo(x, y);
 			nexp.play(p, time);
-			nexp.prescale(0.6);
 
 			perfect = AnimationPreset.get("judge_perfect");
 			perfect.moveTo(x, y);
 			perfect.play(p, time);
-			perfect.prescale(0.6);
+			perfect.prescale(0.75);
 
 			ps = new Sprite("node_flash_04");
 			ps.moveTo(x, y);
-			ps.bright();
-			ps.prescale(0.8);
+			ps.brighten();
 			ps.addTransform(new LinearAlphaTransform(time - p.beat, time
 					- p.beat / 2, 0, 1));
 
 			nps = new Sprite("node_flash_01");
 			nps.moveTo(x, y);
-			nps.prescale(0.8);
 			nps.addTransform(new LinearAlphaTransform(time - p.beat, time
 					- p.beat / 2, 0, 1));
 		}
 
 		public void paint(Graphics2D g) {
 			if (page == p.page) {
-				if (nflash.ended(p.time + p.beat / 2))
+				if (nflash.ended(p.time))
 					ps.paint(g, p.time);
 				else
 					nflash.paint(g, p.time);

@@ -13,21 +13,25 @@ import javazoom.jl.converter.*;
 public class Pattern {
 	final static String path = "assets/songs/";
 	public static HashMap<String, Integer> prefs = new HashMap<String, Integer>();
+	public static int WIDTH = 960, HEIGHT = 640;
+	public static double SIZE_FIX = HEIGHT / 640.0;
 	static {
 		File f = new File("preferences.txt");
 		if (!f.exists()) {
 			prefs.put("note_effect", 1);
 			prefs.put("quality", 1);
 			prefs.put("bg", 1);
-			prefs.put("mask", 1);
 			prefs.put("popupmode", 2);
 			prefs.put("convertmp3", 1);
+			prefs.put("width", 960);
+			prefs.put("height", 640);
 			try {
 				PrintWriter p = new PrintWriter(new FileWriter(f));
 				for (Map.Entry<String, Integer> entry : prefs.entrySet())
 					p.println(entry.getKey() + "=" + entry.getValue());
 				p.close();
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		} else {
 			try {
@@ -40,15 +44,23 @@ public class Pattern {
 				}
 				in.close();
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
+		WIDTH = prefs.get("width");
+		HEIGHT = prefs.get("height");
+		SIZE_FIX = HEIGHT / 640.0;
 		try {
 			cytus.animation.SpriteLibrary.load();
 			cytus.animation.AnimationPreset.load();
 			cytus.animation.FontLibrary.load();
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
+
+	public static int PWIDTH = HEIGHT * 5 / 4, PHEIGHT = HEIGHT * 3 / 4;
+	public static int PXOFF = (WIDTH - PWIDTH) / 2, PYOFF = HEIGHT / 8;
 
 	public double offset = 0, beat = 0, time = 0;
 	public int page = 0;
@@ -63,7 +75,8 @@ public class Pattern {
 	Image bg = null, line = null;
 	ComboSmallPop pop = null;
 	MaskBeat mask = null;
-	public BufferedImage buf = new BufferedImage(960, 720,
+	ComboAnimation comboanim = null;
+	public BufferedImage buf = new BufferedImage(WIDTH, HEIGHT,
 			BufferedImage.TYPE_INT_ARGB);
 
 	public Player player = null;
@@ -91,7 +104,6 @@ public class Pattern {
 				return Double.compare(n1.stime, n2.stime);
 			}
 		});*/
-		// New feature in JDK 1.8
 		Arrays.sort(t,(a,b)->Double.compare(a.stime,b.stime));
 		notes.clear();
 		Collections.addAll(notes, t);
@@ -106,23 +118,28 @@ public class Pattern {
 			player = Manager.createRealizedPlayer(new MediaLocator(new File(
 					path + name + "/" + name + ".mp3").toURI().toURL()));
 
+		bg = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g =(Graphics2D)bg.getGraphics();
+		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+					RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 		if (prefs.get("bg") == 1) {
+		    Image bgfile=null;
 			if (new File(path + name + "/" + name + "_bg.png").exists())
-				bg = ImageIO
+				bgfile = ImageIO
 						.read(new File(path + name + "/" + name + "_bg.png"));
 			else if (new File(path + name + "/bg.png").exists())
-				bg = ImageIO.read(new File(path + name + "/bg.png"));
+				bgfile = ImageIO.read(new File(path + name + "/bg.png"));
 			else
-				bg = ImageIO.read(new File(path + name + "/" + name + ".png"));
+				bgfile = ImageIO.read(new File(path + name + "/" + name + ".png"));
 
-			bg = bg.getScaledInstance(960, 640, Image.SCALE_SMOOTH);
-			bg = ImageUtil.transparent(bg, 0.8f);
-		} else {
-			bg = new BufferedImage(960, 720, BufferedImage.TYPE_INT_ARGB);
-			Graphics g = bg.getGraphics();
+			g.drawImage(bgfile,0,0,WIDTH,HEIGHT,null);
+			g.setComposite(AlphaComposite.SrcOver.derive(0.8f));
 			g.setColor(Color.WHITE);
-			g.fillRect(0, 0, 960, 720);
-			g.dispose();
+			g.fillRect(0, 0, WIDTH, HEIGHT);
+			g.setComposite(AlphaComposite.SrcOver);
+		} else {
+			g.setColor(Color.WHITE);
+			g.fillRect(0, 0, WIDTH, HEIGHT);
 		}
 
 		BufferedImage title = SpriteLibrary.get("gameplay_title");
@@ -130,20 +147,18 @@ public class Pattern {
 		BufferedImage mask2 = SpriteLibrary.get("gameplay_bg_mask_2");
 		BufferedImage white = SpriteLibrary.get("gameplay_bg_mask");
 
-		Graphics g = bg.getGraphics();
-		g.drawImage(white, 0, 0, 960, 64, null);
-		g.drawImage(mask2, 0, 0, 960, 64, null);
+		g.drawImage(white, 0, 0, WIDTH, HEIGHT/10, null);
+		g.drawImage(mask2, 0, 0, WIDTH, HEIGHT/10, null);
 		g.drawImage(mask1, 0, 0, null);
-		g.drawImage(mask1, 960, 0, 664, 65, 0, 0, 296, 65, null);
-		g.drawImage(title, 310, 0, null);
+		g.drawImage(mask1, WIDTH, 0, WIDTH-mask1.getWidth(), mask1.getHeight(), 0, 0, mask1.getWidth(), mask1.getHeight(), null);
+		g.drawImage(title, WIDTH/2 - title.getWidth()/2, 0, null);
+		g.dispose();
+		
 		line = SpriteLibrary.get("scanline");
-
 		sound = new JSPlayer("assets/sounds/beat1.wav");
-
-		if (prefs.get("note_effect") == 0)
+        if (prefs.get("note_effect") == 0)
 			sound.mute();
-		if (prefs.get("mask") == 1)
-			mask = new MaskBeat(offset, beat / 2);
+		mask = new MaskBeat(offset, beat / 2);
 
 		gg = (Graphics2D) buf.getGraphics();
 		gg.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -185,15 +200,32 @@ public class Pattern {
 		} catch (Exception e) {
 		}
 
-		if (combo % 25 == 0) {
-			ComboAnimation anim = new ComboAnimation(combo, time);
-			addAnimation(anim);
-		}
+		if (combo % 25 == 0)
+			comboanim = new ComboAnimation(combo, time);
 	}
 
 	public void addCombo(int add) {
 		for (int i = 0; i < add; i++)
 			addCombo();
+	}
+
+	public int calcPage(double time) {
+		return (int) ((time + offset) / beat);
+	}
+
+	public int calcX(double x) {
+		return (int) (x * PWIDTH + PXOFF);
+	}
+
+	public int calcY(double time) {
+		int cpage = calcPage(time);
+		int y = (int) (((time + offset) % beat / beat) * PHEIGHT);
+
+		if (cpage % 2 == 0)
+			y = PHEIGHT - y;
+
+		y += PYOFF;
+		return y;
 	}
 
 	public void start(Graphics2D g) throws Exception {
@@ -239,13 +271,8 @@ public class Pattern {
 		if (mask != null)
 			mask.paint(gg, time);
 
-		page = (int) ((time + offset) / beat);
-		liney = (int) (((time + offset) % beat / beat) * 470);
-
-		if (page % 2 == 0)
-			liney = 470 - liney;
-
-		liney += 85;
+		page = calcPage(time);
+		liney = calcY(time);
 
 		LinkedList<Animation> del = new LinkedList<Animation>();
 
@@ -257,6 +284,9 @@ public class Pattern {
 		}
 
 		animqueue.removeAll(del);
+
+		if (comboanim != null)
+			comboanim.paint(gg, time);
 
 		LinkedList<Note> del2 = new LinkedList<Note>();
 
@@ -302,22 +332,26 @@ public class Pattern {
 			}
 		}
 
-		gg.drawImage(line, 0, liney - 24, null);
+		gg.drawImage(line, 0, liney - (int) (24 * SIZE_FIX), null);
 
 		if (combo > 1) {
 			BufferedImage text = SpriteLibrary.get("combo_small_text");
 			BufferedImage bg = SpriteLibrary.get("combo_small_bg");
 			double scale = pop != null ? pop.scale(time) : 1;
-			int w1 = (int) (250 * pop.scale(time));
-			gg.drawImage(bg, 480 - w1 / 2, 44, w1, 28, null);
-			gg.drawImage(text, 370, 44, 92, 27, null);
+			int w1 = (int) (250 * SIZE_FIX * scale);
+			gg.drawImage(bg, WIDTH / 2 - w1 / 2, (int) (44 * SIZE_FIX), w1,
+					(int) (28 * SIZE_FIX), null);
+			gg.drawImage(text, (int) (WIDTH / 2 - 110 * SIZE_FIX),
+					(int) (44 * SIZE_FIX), (int) (92 * SIZE_FIX),
+					(int) (27 * SIZE_FIX), null);
 			BufferedImage cp = FontLibrary.getComboSmall(combo);
 			int w2 = (int) (cp.getWidth() * scale), h2 = (int) (cp.getHeight() * scale);
-			gg.drawImage(cp, 550 - w2 / 2, 58 - h2 / 2, w2, h2, null);
+			gg.drawImage(cp, (int) (WIDTH / 2 + 58 * SIZE_FIX) - w2 / 2,
+					(int) (58 * SIZE_FIX) - h2 / 2, w2, h2, null);
 		}
 
 		BufferedImage sp = FontLibrary.getScore(score);
-		gg.drawImage(sp, 960 - sp.getWidth(), 4, null);
+		gg.drawImage(sp, WIDTH - sp.getWidth(), (int) (4 * SIZE_FIX), null);
 
 		long mtime2 = System.nanoTime();
 		double fps = 1e9 / (mtime2 - mtime1);
@@ -358,19 +392,12 @@ public class Pattern {
 				s.nextInt();
 				s.nextInt();
 				double time = s.nextDouble();
-				int y = (int) ((time + offset) % beat / beat * 470);
+				int y = calcY(s.nextDouble());
 				s.nextInt();
-				int x = (int) (s.nextDouble() * 800);
-				int page = (int) ((time + offset) / beat);
+				int x = calcX(s.nextDouble());
 				int next = s.nextInt();
 				double hold = s.nextDouble();
 				s.close();
-
-				if (page % 2 == 0)
-					y = 470 - y;
-
-				x += 80;
-				y += 85;
 
 				if ((next == -1) && (hold != 0)) {
 					notes.add(new Hold(Pattern.this, x, y, time, hold));
@@ -454,17 +481,10 @@ public class Pattern {
 				Scanner s = new Scanner(str);
 				s.nextInt();
 				double time = s.nextDouble();
-				int page = (int) ((time + offset) / beat);
-				int y = (int) ((time + offset) % beat / beat * 470);
-				int x = (int) (s.nextDouble() * 800);
+				int y = calcY(time);
+				int x = calcX(s.nextDouble());
 				double hold = s.nextDouble();
 				s.close();
-
-				if (page % 2 == 0)
-					y = 470 - y;
-
-				x += 80;
-				y += 85;
 
 				if (hold != 0) {
 					notes.add(new Hold(Pattern.this, x, y, time, hold));
@@ -509,14 +529,15 @@ public class Pattern {
 						out.print("NOTE\t");
 						out.print((count++) + "\t");
 						out.print(df.format(node.stime) + "\t");
-						out.print(df.format((node.x - 80) / 800.0) + "\t");
+						out.print(df.format((node.x - PXOFF) / (double) PWIDTH)
+								+ "\t");
 						out.println("0.000000");
 					}
 				} else {
 					out.print("NOTE\t");
 					out.print((count++) + "\t");
 					out.print(df.format(n.stime) + "\t");
-					out.print(df.format((n.x - 80) / 800.0) + "\t");
+					out.print(df.format((n.x - PXOFF) / (double) PWIDTH) + "\t");
 					out.println(df.format((n.etime - n.stime)));
 				}
 			}

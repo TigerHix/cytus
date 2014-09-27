@@ -16,7 +16,7 @@ public class Circle extends Note {
 		this.y = y;
 		this.stime = time;
 		this.etime = time;
-		page = (int) ((time + p.offset) / p.beat);
+		page = p.calcPage(time);
 		circle = page % 2 == 0 ? new Sprite("red_active") : new Sprite(
 				"yellow_active");
 		circle.moveTo(x, y);
@@ -72,7 +72,7 @@ public class Circle extends Note {
 
 	public void paint(Graphics2D g) {
 		if (p.time + p.beat / 2 >= stime)
-			circle.bright();
+			circle.brighten();
 
 		circle.paint(g, p.time);
 
@@ -85,9 +85,7 @@ public class Circle extends Note {
 
 		Animation a1 = AnimationPreset.get("critical_explosion");
 		a1.moveTo(x, y);
-		a1.prescale(0.6);
 		Animation a2 = AnimationPreset.get("judge_perfect");
-		a2.prescale(0.8);
 		a2.moveTo(x, y);
 		Animation a3 = new Animation(
 				page % 2 == 0 ? "red_blow" : "yellow_blow", stime,

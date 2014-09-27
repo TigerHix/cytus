@@ -1,5 +1,6 @@
 package cytus.animation;
 
+import cytus.*;
 import java.awt.*;
 import java.awt.image.*;
 
@@ -16,10 +17,10 @@ public class MaskBeat extends Sprite {
 	public void paint(Graphics2D g, double time) {
 		double pos = ((time + offset) % beat) / beat;
 		double size = 0.7 + 0.3 * Math.max(Math.cos(pos * Math.PI * 2), 0);
-		// g.setComposite(AlphaComposite.SrcOver.derive(0.5f));
-		g.drawImage(img, 0, 64, (int) (img.getWidth() * size), 640, null);
-		g.drawImage(img, 960, 64, 960 - (int) (img.getWidth() * size), 640, 0,
-				0, img.getWidth(), img.getHeight(), null);
-		// g.setComposite(AlphaComposite.SrcOver);
+		g.drawImage(img, 0, Pattern.HEIGHT / 10, (int) (img.getWidth() * size),
+				Pattern.HEIGHT * 9 / 10, null);
+		g.drawImage(img, Pattern.WIDTH, Pattern.HEIGHT / 10, Pattern.WIDTH
+				- (int) (img.getWidth() * size), Pattern.HEIGHT, 0, 0,
+				img.getWidth(), img.getHeight(), null);
 	}
 }

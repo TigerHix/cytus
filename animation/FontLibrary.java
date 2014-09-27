@@ -61,10 +61,13 @@ public class FontLibrary {
 				font.img.getGraphics().drawImage(img, 0, 0, font.w, font.h,
 						font.x, font.y, font.x + font.w, font.y + font.h, null);
 				if (i == 2) {
-					ImageUtil.reverseColor(font.img);// special
+					ImageUtil.inverseColor(font.img);// special
 					font.img = ImageUtil.scale(font.img, 1.5);
 				}
 
+				font.img = ImageUtil.scale(font.img, cytus.Pattern.SIZE_FIX);
+				font.w = (int) (font.w * cytus.Pattern.SIZE_FIX);
+				font.h = (int) (font.h * cytus.Pattern.SIZE_FIX);
 				map.put(fclass[i] + font.id, font);
 				str = r.readLine();
 			}
@@ -79,19 +82,21 @@ public class FontLibrary {
 			font[i] = map.get("lcfont" + s.charAt(i));
 
 		int len = font[0].w;
+		int adv = (int) (8 * cytus.Pattern.SIZE_FIX);
 
 		for (int i = 1; i < font.length; i++)
-			len += font[i].w - 8; // xadv
+			len += font[i].w - adv; // xadv
 
-		BufferedImage img = new BufferedImage(len, 27,
+		BufferedImage img = new BufferedImage(len,
+				(int) (27 * cytus.Pattern.SIZE_FIX),
 				BufferedImage.TYPE_INT_ARGB);
 		Graphics g = img.getGraphics();
 		g.drawImage(font[0].img, 0, 0, null);
 		len = font[0].w;
 
 		for (int i = 1; i < font.length; i++) {
-			g.drawImage(font[i].img, len - 8, 0, null); // xadv
-			len += font[i].w - 8;
+			g.drawImage(font[i].img, len - adv, 0, null); // xadv
+			len += font[i].w - adv;
 		}
 
 		g.dispose();
@@ -106,20 +111,22 @@ public class FontLibrary {
 		for (int i = 0; i < 7; i++)
 			font[i] = map.get("sfont" + s.charAt(i));
 
-		int len = font[0].w + 16;
+		int adv = (int) (16 * cytus.Pattern.SIZE_FIX);
+		int len = font[0].w + adv;
 
 		for (int i = 1; i < 7; i++)
-			len += font[i].w + 16; // xadv
+			len += font[i].w + adv; // xadv
 
-		BufferedImage img = new BufferedImage(len, 64,
+		BufferedImage img = new BufferedImage(len,
+				(int) (64 * cytus.Pattern.SIZE_FIX),
 				BufferedImage.TYPE_INT_ARGB);
 		Graphics g = img.getGraphics();
 		g.drawImage(font[0].img, 0, 0, null);
-		len = font[0].w + 16;
+		len = font[0].w + adv;
 
 		for (int i = 1; i < 7; i++) {
 			g.drawImage(font[i].img, len, 0, null); // xadv
-			len += font[i].w + 16;
+			len += font[i].w + adv;
 		}
 
 		g.dispose();
