@@ -14,24 +14,26 @@ public class ComboAnimation {
 	public ComboAnimation(int combo, double time) {
 		String str = String.valueOf(combo);
 		int len = str.length();
-		img = new BufferedImage((int) ((len + 1) * 128 * Pattern.SIZE_FIX),
-				(int) (317 * Pattern.SIZE_FIX), BufferedImage.TYPE_INT_ARGB);
+		img = new BufferedImage(
+				(int) ((len + 1) * 128 * PatternPlayer.SIZE_FIX),
+				(int) (317 * PatternPlayer.SIZE_FIX),
+				BufferedImage.TYPE_INT_ARGB);
 		Graphics g = img.getGraphics();
 
 		for (int i = 0; i < len; i++) {
 			BufferedImage num = FontLibrary
 					.get("bcfont" + (str.charAt(i) - 48));
-			g.drawImage(num, i * (int) (128 * Pattern.SIZE_FIX), 0, null);
+			g.drawImage(num, i * (int) (128 * PatternPlayer.SIZE_FIX), 0, null);
 		}
 
 		g.dispose();
 
 		stime = time;
 		etime = time + 1;
-		x = Pattern.WIDTH / 2 - img.getWidth() / 2;
-		y = (int) (180 * Pattern.SIZE_FIX);
-		textx = Pattern.WIDTH / 2 - (int) (150 * Pattern.SIZE_FIX);
-		texty = (int) (150 * Pattern.SIZE_FIX);
+		x = PatternPlayer.WIDTH / 2 - img.getWidth() / 2;
+		y = (int) (180 * PatternPlayer.SIZE_FIX);
+		textx = PatternPlayer.WIDTH / 2 - (int) (150 * PatternPlayer.SIZE_FIX);
+		texty = (int) (150 * PatternPlayer.SIZE_FIX);
 
 		textimg = SpriteLibrary.get("combo_text");
 	}

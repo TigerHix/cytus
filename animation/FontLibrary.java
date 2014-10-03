@@ -60,14 +60,15 @@ public class FontLibrary {
 						BufferedImage.TYPE_INT_ARGB);
 				font.img.getGraphics().drawImage(img, 0, 0, font.w, font.h,
 						font.x, font.y, font.x + font.w, font.y + font.h, null);
-				if (i == 2) {
-					ImageUtil.inverseColor(font.img);// special
-					font.img = ImageUtil.scale(font.img, 1.5);
-				}
+				if (i == 2)
+					ImageUtil.inverseColor(font.img);// Bolton Bold special
+				// ImageUtil.replaceColor(font.img,Color.WHITE.getRGB(),new
+				// Color(50,50,50).getRGB());
 
-				font.img = ImageUtil.scale(font.img, cytus.Pattern.SIZE_FIX);
-				font.w = (int) (font.w * cytus.Pattern.SIZE_FIX);
-				font.h = (int) (font.h * cytus.Pattern.SIZE_FIX);
+				font.img = ImageUtil.scale(font.img,
+						cytus.PatternPlayer.SIZE_FIX);
+				font.w = (int) (font.w * cytus.PatternPlayer.SIZE_FIX);
+				font.h = (int) (font.h * cytus.PatternPlayer.SIZE_FIX);
 				map.put(fclass[i] + font.id, font);
 				str = r.readLine();
 			}
@@ -82,13 +83,13 @@ public class FontLibrary {
 			font[i] = map.get("lcfont" + s.charAt(i));
 
 		int len = font[0].w;
-		int adv = (int) (8 * cytus.Pattern.SIZE_FIX);
+		int adv = (int) (8 * cytus.PatternPlayer.SIZE_FIX);
 
 		for (int i = 1; i < font.length; i++)
 			len += font[i].w - adv; // xadv
 
 		BufferedImage img = new BufferedImage(len,
-				(int) (27 * cytus.Pattern.SIZE_FIX),
+				(int) (27 * cytus.PatternPlayer.SIZE_FIX),
 				BufferedImage.TYPE_INT_ARGB);
 		Graphics g = img.getGraphics();
 		g.drawImage(font[0].img, 0, 0, null);
@@ -111,14 +112,15 @@ public class FontLibrary {
 		for (int i = 0; i < 7; i++)
 			font[i] = map.get("sfont" + s.charAt(i));
 
-		int adv = (int) (16 * cytus.Pattern.SIZE_FIX);
+		// int adv = (int) (0 * cytus.PatternPlayer.SIZE_FIX);
+		int adv = 0;
 		int len = font[0].w + adv;
 
 		for (int i = 1; i < 7; i++)
 			len += font[i].w + adv; // xadv
 
 		BufferedImage img = new BufferedImage(len,
-				(int) (64 * cytus.Pattern.SIZE_FIX),
+				(int) (48 * cytus.PatternPlayer.SIZE_FIX),
 				BufferedImage.TYPE_INT_ARGB);
 		Graphics g = img.getGraphics();
 		g.drawImage(font[0].img, 0, 0, null);

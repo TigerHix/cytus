@@ -1,7 +1,0 @@
-height=640
-width=960
-quality=1
-bg=1
-note_effect=1
-popupmode=2
-convertmp3=1

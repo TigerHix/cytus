@@ -25,7 +25,8 @@ public class SpriteLibrary {
 
 		while (str1 != null) {
 			String pair[] = str1.split("\\t");
-			objlist.put(pair[0], Double.parseDouble(pair[1]) * Pattern.SIZE_FIX);
+			objlist.put(pair[0], Double.parseDouble(pair[1])
+					* PatternPlayer.SIZE_FIX);
 			str1 = r1.readLine();
 		}
 		r1.close();
@@ -97,9 +98,9 @@ public class SpriteLibrary {
 		}
 
 		BufferedImage t = map.get("bar");
-		BufferedImage scanline = new BufferedImage(Pattern.WIDTH,
+		BufferedImage scanline = new BufferedImage(PatternPlayer.WIDTH,
 				t.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		for (int i = 0; i <= Pattern.WIDTH / t.getWidth(); i++)
+		for (int i = 0; i <= PatternPlayer.WIDTH / t.getWidth(); i++)
 			scanline.getGraphics().drawImage(t, i * t.getWidth(), 0, null);
 
 		map.put("scanline", scanline);

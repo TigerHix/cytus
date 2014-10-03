@@ -45,26 +45,14 @@ public class Animation extends Sprite {
 		super.paint(g, time);
 	}
 
-	public void play(Pattern p) {
+	public void play(PatternPlayer p) {
 		play(p, stime);
 	}
 
-	public void play(Pattern p, double stime) {
+	public void play(PatternPlayer p, double stime) {
 		this.stime = stime;
 		etime = stime + len * n;
 		p.addAnimation(this);
-	}
-
-	public void flip() {
-		for (int i = 0; i < n; i++)
-			img[i] = SpriteLibrary.getFlip(frames[i]);
-
-		ay = 1 - ay;
-	}
-
-	public void prescale(double s) {
-		for (int i = 0; i < n; i++)
-			img[i] = SpriteLibrary.getScaledSprite(frames[i], s);
 	}
 
 	public void setStartTime(double stime) {
@@ -89,5 +77,28 @@ public class Animation extends Sprite {
 
 	public boolean ended(double time) {
 		return time > etime;
+	}
+
+	public void flip() {
+		for (int i = 0; i < n; i++) {
+			img[i] = SpriteLibrary.getFlip(frames[i]);
+			frames[i] = "flip_" + frames[i];
+		}
+
+		ay = 1 - ay;
+	}
+
+	public void brighten() {
+		for (int i = 0; i < n; i++) {
+			img[i] = SpriteLibrary.getBrighter(frames[i]);
+			frames[i] = "bright_" + frames[i];
+		}
+	}
+
+	public void prescale(double s) {
+		for (int i = 0; i < n; i++) {
+			img[i] = SpriteLibrary.getScaledSprite(frames[i], s);
+			frames[i] += s;
+		}
 	}
 }

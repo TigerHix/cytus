@@ -28,6 +28,23 @@ public class ImageUtil {
 		return img;
 	}
 
+	public static BufferedImage scale(BufferedImage src, int width, int height) {
+		if ((width == -1) && (height == -1))
+			return src;
+		int w = width, h = height;
+		if (w == -1)
+			w = src.getWidth() * (src.getHeight() / h);
+		if (h == -1)
+			h = src.getHeight() * (src.getWidth() / w);
+		BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = (Graphics2D) img.getGraphics();
+		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+				RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+		g.drawImage(src, 0, 0, w, h, null);
+		g.dispose();
+		return img;
+	}
+
 	public static BufferedImage flip(BufferedImage src) {
 		int w = src.getWidth();
 		int h = src.getHeight();
@@ -75,6 +92,16 @@ public class ImageUtil {
 		return (a << 24) | (r << 16) | (g << 8) | b;
 	}
 
+	public static int calcAberration(int rgb1, int rgb2) {
+		int r1 = (rgb1 >> 16) & 0xFF;
+		int g1 = (rgb1 >> 8) & 0xFF;
+		int b1 = rgb1 & 0xFF;
+		int r2 = (rgb2 >> 16) & 0xFF;
+		int g2 = (rgb2 >> 8) & 0xFF;
+		int b2 = rgb2 & 0xFF;
+		return Math.abs(r1 - r2) + Math.abs(g1 - g2) + Math.abs(b1 - b2);
+	}
+
 	public static void brighter(BufferedImage img, double d) {
 		int w = img.getWidth(), h = img.getHeight();
 		int data[] = (int[]) img.getRaster().getDataElements(0, 0, w, h, null);
@@ -91,6 +118,17 @@ public class ImageUtil {
 
 		for (int i = 0; i < data.length; i++)
 			data[i] = inverseRGB(data[i]);
+
+		img.getRaster().setDataElements(0, 0, w, h, data);
+	}
+
+	public static void replaceColor(BufferedImage img, int color1, int color2) {
+		int w = img.getWidth(), h = img.getHeight();
+		int data[] = (int[]) img.getRaster().getDataElements(0, 0, w, h, null);
+
+		for (int i = 0; i < data.length; i++)
+			if (calcAberration(data[i], color1) <= 128)
+				data[i] = color2;
 
 		img.getRaster().setDataElements(0, 0, w, h, data);
 	}

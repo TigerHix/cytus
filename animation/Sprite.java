@@ -53,22 +53,9 @@ public class Sprite {
 			ImageUtil.drawImageF(cimg, dst, t);
 	}
 
-	public void flip() {
-		if (srcname != null)
-			cimg = SpriteLibrary.getFlip(srcname);
-		else
-			cimg = ImageUtil.flip(cimg);
-
-		ay = 1 - ay;
-	}
-
 	public void scale(double sx, double sy) {
 		this.sx = sx;
 		this.sy = sy;
-	}
-
-	public void prescale(double s) {
-		cimg = SpriteLibrary.getScaledSprite(srcname, s);
 	}
 
 	public void rotate(double angle) {
@@ -119,14 +106,33 @@ public class Sprite {
 		childs.remove(s);
 	}
 
+	public void prescale(double s) {
+		if (srcname != null) {
+			cimg = SpriteLibrary.getScaledSprite(srcname, s);
+			srcname += s;
+		} else
+			cimg = ImageUtil.scale(cimg, s);
+	}
+
 	public void brighten() {
 		if (!bright) {
 			bright = true;
 
-			if (srcname != null)
+			if (srcname != null) {
 				cimg = SpriteLibrary.getBrighter(srcname);
-			else
+				srcname = "bright_" + srcname;
+			} else
 				ImageUtil.brighter(cimg, 1.5);
 		}
+	}
+
+	public void flip() {
+		if (srcname != null) {
+			cimg = SpriteLibrary.getFlip(srcname);
+			srcname = "flip_" + srcname;
+		} else
+			cimg = ImageUtil.flip(cimg);
+
+		ay = 1 - ay;
 	}
 }

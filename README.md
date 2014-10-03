@@ -5,7 +5,7 @@ Official Website: [http://rayark.com/g/cytus/](http://rayark.com/g/cytus/)
 
 This program is written in Java and tested on Windows.  
 
-Dependencies
+External Libraries
 ------------
 - [JMF(Java Media Framework,Oracle Technology Network,`v2.1.1e`)](http://www.oracle.com/technetwork/java/javase/download-142937.html)
 - [JLayer(`v1.0.1`)](http://www.javazoom.net/javalayer/javalayer.html)
@@ -23,7 +23,7 @@ Main class: cytus.Main
 > java cytus.Main &lt;songtitle&gt;
 
 Put *assets*  in the same folder as game data  
-(Downloads of *assets* are NOT provided due to copyright issues)
+(Downloads of Cytus Lambda *assets* are NOT provided due to copyright issues)
 
 ### Folder Structure of *assets*
 - assets  
@@ -83,7 +83,7 @@ Put *assets*  in the same folder as game data
 
 ### Preferences.txt
 - convertmp3
-	- Description: Determines whether the mp3 file should be first converted into wav file(test.wav)
+	- Description: Decides whether the .mp3 file should be first converted into .wav file(test.wav)
 	- **NOTE:JMF will probably refuse to work if it is 0**
 	- Value: 0,1  
 	- Default Value: 1
@@ -99,7 +99,7 @@ Put *assets*  in the same folder as game data
 
 ----------
 
-- note_effect
+- clickfx
 	- Description: Enable/Disable hitsound 
 	- Value: 0,1  
 	- Default Value: 1
@@ -107,42 +107,48 @@ Put *assets*  in the same folder as game data
 ----------
 
 - popupmode
-	- Description: Change the display style of the notes(0-None,1-Default,2-Grouped)  
+	- Description: Change the pop-up mode of the notes(0-None,1-Default,2-Grouped)  
 	- Value: 0,1,2  
 	- Default Value: 2
 
 ----------
 
 - quality
-	- Description: Set the quality of graphics(1-Low,2-Medium,3-High)  
+	- Description: Set the quality of the graphics(1-Low,2-Medium,3-High)  
 	- Value: 1,2,3  
 	- Default Value: 1
 
 ----------
 
 - width&height
-    - Description: Set window size
+    - Description: Set the size of the window
     - Default Value:960 & 640
+
+----------
+- showid
+    - Description: Show note id when drawing, for debug use
+    - Value: 0,1
+    - Default Value:0
 
 Others
 -------------
 
 ### Screenshot
-![Screenshot1](https://github.com/Dewott/cytus/blob/master/ss1.jpg) 
+![Screenshot](https://github.com/Dewott/cytus/blob/master/ss.jpg) 
 
-![Screenshot2](https://github.com/Dewott/cytus/blob/master/ss2.jpg) 
+### ext/Kamcord
+An experimental tool for recording videos 
 
+### ext/osu & ext/deemo
+Conversion between Cytus patterns and osu! beatmaps/Deemo compositions(beta)  
 
-### Preview Video
-[http://pan.baidu.com/s/1jGmPOou](http://pan.baidu.com/s/1jGmPOou)
-
-### ext/osu
-Conversion between Cytus patterns and osu! beatmaps(beta)  
-
+[Temporarily removed]
 ### Editor
-Under construction
+Under construction 
 
-### About author
+[Temporarily removed]
+
+### Author
 Author: [Dewott(@GitHub)](https://github.com/Dewott/cytus)   
 Sina Weibo: [@双贝君](http://weibo.com/Dewott502/)  
 Begin time: 2014-01-27

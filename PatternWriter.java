@@ -1,0 +1,32 @@
+package cytus;
+
+import java.io.*;
+import java.util.*;
+import java.text.*;
+
+public class PatternWriter {
+	public PatternWriter(Pattern pdata, PrintWriter out) throws Exception {
+		DecimalFormat df = new DecimalFormat("0.000000");
+		// Header
+		out.println("VERSION 2");
+		out.println("BPM " + df.format(240.0 / pdata.beat));
+		out.println("PAGE_SHIFT " + df.format(pdata.pshift));
+		out.println("PAGE_SIZE " + df.format(pdata.beat));
+
+		for (Pattern.Note note : pdata.notes) {
+			out.print("NOTE\t");
+			out.print(note.id + "\t");
+			out.print(df.format(note.time) + "\t");
+			out.print(df.format(note.x) + "\t");
+			out.println(df.format(note.holdtime));
+		}
+		for (Pattern.Link link : pdata.links) {
+			out.print("LINK ");
+			for (int i = 0; i < link.n; i++)
+				out.print(link.nodes.get(i).id + " ");
+			out.println();
+		}
+		out.close();
+	}
+
+}
