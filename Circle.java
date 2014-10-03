@@ -10,8 +10,9 @@ public class Circle extends Note {
 	Sprite circle = null, nact = null;
 	Animation shadow = null;
 
-	public Circle(Pattern p, int x, int y, double time) {
+	public Circle(Pattern p, int id, int x, int y, double time) {
 		this.p = p;
+		this.id = id;
 		this.x = x;
 		this.y = y;
 		this.stime = time;
@@ -78,6 +79,12 @@ public class Circle extends Note {
 
 		if (p.page < page)
 			nact.paint(g, p.time);
+
+		if (Pattern.prefs.get("showid") == 1) {
+			g.setColor(Color.GREEN);
+			g.drawString(String.valueOf(id), x, y);
+			g.setColor(Color.BLACK);
+		}
 	}
 
 	public void remove() {

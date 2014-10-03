@@ -21,7 +21,12 @@ public class Main extends JFrame {
 		p.start(g);
 	}
 
-	public static void main(String args[]) throws Exception {
-		new Main(args[0]);
+	public static void main(String args[]) {
+		try {
+			new Main(args[0]);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
 	}
 }

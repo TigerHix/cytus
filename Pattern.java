@@ -25,6 +25,7 @@ public class Pattern {
 			prefs.put("convertmp3", 1);
 			prefs.put("width", 960);
 			prefs.put("height", 640);
+			prefs.put("showid", 0);
 			try {
 				PrintWriter p = new PrintWriter(new FileWriter(f));
 				for (Map.Entry<String, Integer> entry : prefs.entrySet())
@@ -46,6 +47,22 @@ public class Pattern {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			if (!prefs.containsKey("note_effect"))
+				prefs.put("note_effect", 1);
+			if (!prefs.containsKey("quality"))
+				prefs.put("quality", 1);
+			if (!prefs.containsKey("bg"))
+				prefs.put("bg", 1);
+			if (!prefs.containsKey("popupmode"))
+				prefs.put("popupmode", 2);
+			if (!prefs.containsKey("convertmp3"))
+				prefs.put("convertmp3", 1);
+			if (!prefs.containsKey("width"))
+				prefs.put("width", 960);
+			if (!prefs.containsKey("height"))
+				prefs.put("height", 640);
+			if (!prefs.containsKey("showid"))
+				prefs.put("showid", 0);
 		}
 		WIDTH = prefs.get("width");
 		HEIGHT = prefs.get("height");
@@ -56,6 +73,7 @@ public class Pattern {
 			cytus.animation.FontLibrary.load();
 		} catch (Exception e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 
@@ -124,23 +142,23 @@ public class Pattern {
 					RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 		if (prefs.get("bg") == 1) {
 		    Image bgfile=null;
-			if (new File(path + name + "/" + name + "_bg.png").exists())
-				bgfile = ImageIO
-						.read(new File(path + name + "/" + name + "_bg.png"));
-			else if (new File(path + name + "/bg.png").exists())
-				bgfile = ImageIO.read(new File(path + name + "/bg.png"));
-			else
-				bgfile = ImageIO.read(new File(path + name + "/" + name + ".png"));
+			try{
+			    if (new File(path + name + "/" + name + "_bg.png").exists())
+				  bgfile = ImageIO.read(new File(path + name + "/" + name + "_bg.png"));
+			    else if (new File(path + name + "/bg.png").exists())
+				  bgfile = ImageIO.read(new File(path + name + "/bg.png"));
+			    else
+				  bgfile = ImageIO.read(new File(path + name + "/" + name + ".png"));
 
-			g.drawImage(bgfile,0,0,WIDTH,HEIGHT,null);
-			g.setComposite(AlphaComposite.SrcOver.derive(0.8f));
-			g.setColor(Color.WHITE);
-			g.fillRect(0, 0, WIDTH, HEIGHT);
-			g.setComposite(AlphaComposite.SrcOver);
-		} else {
-			g.setColor(Color.WHITE);
-			g.fillRect(0, 0, WIDTH, HEIGHT);
+			    g.drawImage(bgfile,0,0,WIDTH,HEIGHT,null);
+			}catch(Exception e){
+			    e.printStackTrace();
+			}
 		}
+	    g.setComposite(AlphaComposite.SrcOver.derive(0.8f));
+		g.setColor(Color.WHITE);
+		g.fillRect(0, 0, WIDTH, HEIGHT);
+		g.setComposite(AlphaComposite.SrcOver);
 
 		BufferedImage title = SpriteLibrary.get("gameplay_title");
 		BufferedImage mask1 = SpriteLibrary.get("gameplay_title_mask");
@@ -155,7 +173,12 @@ public class Pattern {
 		g.dispose();
 		
 		line = SpriteLibrary.get("scanline");
-		sound = new JSPlayer("assets/sounds/beat1.wav");
+		try{
+		    sound = new JSPlayer("assets/sounds/beat1.wav");
+		}catch(Exception e){
+		    e.printStackTrace();
+		    sound.mute();
+		}
         if (prefs.get("note_effect") == 0)
 			sound.mute();
 		mask = new MaskBeat(offset, beat / 2);
@@ -172,7 +195,7 @@ public class Pattern {
 			gg.setRenderingHint(RenderingHints.KEY_RENDERING,
 					RenderingHints.VALUE_RENDER_QUALITY);
 
-		gg.setStroke(new BasicStroke(5));
+		gg.setStroke(new BasicStroke((int)(7*SIZE_FIX)));
 		gg.setColor(Color.BLACK);
 	}
 
@@ -231,6 +254,7 @@ public class Pattern {
 	public void start(Graphics2D g) throws Exception {
 		player.start();
 		while (true) {
+			time = player.getMediaTime().getSeconds();
 			int drawtime = paint();
 			g.drawImage(buf, 0, 0, null);
 			/*
@@ -263,8 +287,6 @@ public class Pattern {
 	}
 
 	public int paint() throws Exception {
-		time = player.getMediaTime().getSeconds();
-
 		long mtime1 = System.nanoTime();
 		gg.drawImage(bg, 0, 0, null);
 
@@ -357,7 +379,7 @@ public class Pattern {
 		double fps = 1e9 / (mtime2 - mtime1);
 		String info = "Time:"
 				+ new java.text.DecimalFormat("0.000").format(time);
-		info += " fps:" + (int) fps;
+		// info += " fps:" + (int) fps;
 		info += " TP:" + new java.text.DecimalFormat("00.00").format(tp);
 
 		gg.drawString(info, 10, 20);
@@ -400,7 +422,7 @@ public class Pattern {
 				s.close();
 
 				if ((next == -1) && (hold != 0)) {
-					notes.add(new Hold(Pattern.this, x, y, time, hold));
+					notes.add(new Hold(Pattern.this, ncount, x, y, time, hold));
 					v[ncount] = false;
 				} else {
 					data[ncount][0] = x;
@@ -420,13 +442,13 @@ public class Pattern {
 
 					while (data[p][3] != -1) {
 						v[p] = false;
-						link.nodes.add(link.new Node((int) data[p][0],
+						link.nodes.add(link.new Node(p, (int) data[p][0],
 								(int) data[p][1], data[p][2]));
 						p = (int) data[p][3];
 					}
 
 					v[p] = false;
-					link.nodes.add(link.new Node((int) data[p][0],
+					link.nodes.add(link.new Node(p, (int) data[p][0],
 							(int) data[p][1], data[p][2]));
 					link.recalc();
 					notes.add(link);
@@ -434,7 +456,7 @@ public class Pattern {
 
 			for (int i = 0; i < ncount; i++)
 				if (v[i])
-					notes.add(new Circle(Pattern.this, (int) data[i][0],
+					notes.add(new Circle(Pattern.this, i, (int) data[i][0],
 							(int) data[i][1], data[i][2]));
 		}
 	}
@@ -465,7 +487,7 @@ public class Pattern {
 					while (s.hasNext()) {
 						int p = s.nextInt();
 						v[p] = false;
-						link.nodes.add(link.new Node((int) data[p][0],
+						link.nodes.add(link.new Node(p, (int) data[p][0],
 								(int) data[p][1], data[p][2]));
 					}
 
@@ -487,7 +509,7 @@ public class Pattern {
 				s.close();
 
 				if (hold != 0) {
-					notes.add(new Hold(Pattern.this, x, y, time, hold));
+					notes.add(new Hold(Pattern.this, count, x, y, time, hold));
 					v[count] = false;
 				}
 
@@ -500,7 +522,7 @@ public class Pattern {
 
 			for (int i = 0; i < count; i++)
 				if (v[i])
-					notes.add(new Circle(Pattern.this, (int) data[i][0],
+					notes.add(new Circle(Pattern.this, i, (int) data[i][0],
 							(int) data[i][1], data[i][2]));
 		}
 	}

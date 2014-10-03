@@ -48,7 +48,10 @@ public class AnimationPreset {
 		double len = map1.get(str);
 		boolean mode = map2.get(str);
 		String frames[] = map3.get(str);
-		Animation anim = new Animation(frames.length, len, mode, frames);
+		// Make a copy
+		String copy[] = new String[frames.length];
+		System.arraycopy(frames, 0, copy, 0, frames.length);
+		Animation anim = new Animation(frames.length, len, mode, copy);
 
 		if (str.equals("light_add_2"))
 			anim.setAnchor(0.5, 0.3);

@@ -123,19 +123,24 @@ Cytus是台湾雷亚公司(`Rayark Inc.`)出品的音乐游戏
     - 描述:设置画面宽度和高度
     - 默认值: 960,640
 
+----------
+
+- showid
+    - 描述:显示Note序号
+    - 值: 0,1
+    - 默认值: 0
+
 其他事项
 -------------
 
 ### 运行截图
-![Screenshot1](https://github.com/Dewott/cytus/blob/master/ss1.jpg) 
+![Screenshot](https://github.com/Dewott/cytus/blob/master/ss.jpg) 
 
-![Screenshot2](https://github.com/Dewott/cytus/blob/master/ss2.jpg)
+### ext/Kamcord 
+实验性质的录像工具 
 
-### 运行视频
-[http://pan.baidu.com/s/1jGmPOou](http://pan.baidu.com/s/1jGmPOou)
-
-### ext/osu
-cytus谱面和osu!谱面互相转换(测试中)  
+### ext/osu & ext/deemo
+cytus谱面和osu!,Deemo谱面的互相转换(测试中) 
 
 ### Editor
 谱面编辑器(制作中) 

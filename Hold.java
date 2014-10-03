@@ -12,8 +12,9 @@ public class Hold extends Note {
 	Animation hold1 = null, hold2 = null, light2 = null;
 	boolean playsound = false;
 
-	public Hold(Pattern p, int x, int y, double time, double hold) {
+	public Hold(Pattern p, int id, int x, int y, double time, double hold) {
 		this.p = p;
+		this.id = id;
 		this.x = x;
 		this.y = y;
 		this.stime = time;
@@ -42,9 +43,11 @@ public class Hold extends Note {
 		hold2.setStartTime(stime + 0.75);
 		bar = SpriteLibrary.get("hold_track");
 		light = new Sprite("light_add");
+		light.brighten();
 		light2 = AnimationPreset.get("light_add_2");
 		light2.specialPaint(p.buf);
 		light2.setAnchor(0.5, 0.3);
+		light2.brighten();
 		shadow = new Sprite("shadow");
 		shadow.setAnchor(0.5, 0.1);
 		nact = new Sprite("flash_01");
@@ -58,8 +61,8 @@ public class Hold extends Note {
 			head.flip();
 			hold1.flip();
 			hold2.flip();
-			light2.flip();
 			light.flip();
+			light2.flip();
 			shadow.flip();
 		}
 	}
@@ -103,6 +106,11 @@ public class Hold extends Note {
 
 			if (p.page < page)
 				nact.paint(g, p.time);
+		}
+		if (Pattern.prefs.get("showid") == 1) {
+			g.setColor(Color.GREEN);
+			g.drawString(String.valueOf(id), x, y);
+			g.setColor(Color.BLACK);
 		}
 	}
 

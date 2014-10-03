@@ -38,7 +38,7 @@ public class Link extends Note {
 
 	public void paint(Graphics2D g) {
 		int i = 0;
-		int nodesize = (int) (36 * Pattern.SIZE_FIX);
+		double nodesize = 24 * Pattern.SIZE_FIX;
 
 		if (p.time >= stime) {
 			for (i = n - 1; i > 0; i--)
@@ -177,8 +177,9 @@ public class Link extends Note {
 		Animation nflash = null, nexp = null, perfect = null;
 		Sprite ps = null, nps = null;
 
-		public Node(int x, int y, double time) {
+		public Node(int id, int x, int y, double time) {
 			this.p = Link.this.p;
+			this.id = id;
 			this.x = x;
 			this.y = y;
 			this.page = p.calcPage(time);
@@ -201,7 +202,6 @@ public class Link extends Note {
 
 			ps = new Sprite("node_flash_04");
 			ps.moveTo(x, y);
-			ps.brighten();
 			ps.addTransform(new LinearAlphaTransform(time - p.beat, time
 					- p.beat / 2, 0, 1));
 
@@ -219,6 +219,12 @@ public class Link extends Note {
 					nflash.paint(g, p.time);
 			} else
 				nps.paint(g, p.time);
+
+			if (Pattern.prefs.get("showid") == 1) {
+				g.setColor(Color.GREEN);
+				g.drawString(String.valueOf(id), x, y);
+				g.setColor(Color.BLACK);
+			}
 		}
 
 		public void remove() {

@@ -124,25 +124,28 @@ Put *assets*  in the same folder as game data
     - Description: Set window size
     - Default Value:960 & 640
 
+----------
+- showid
+    - Description: Show note id when drawing, for debug use
+    - Value: 0,1
+    - Default Value:0
+
 Others
 -------------
 
 ### Screenshot
-![Screenshot1](https://github.com/Dewott/cytus/blob/master/ss1.jpg) 
+![Screenshot](https://github.com/Dewott/cytus/blob/master/ss.jpg) 
 
-![Screenshot2](https://github.com/Dewott/cytus/blob/master/ss2.jpg) 
+### ext/Kamcord
+An experimental tool for recording videos 
 
-
-### Preview Video
-[http://pan.baidu.com/s/1jGmPOou](http://pan.baidu.com/s/1jGmPOou)
-
-### ext/osu
-Conversion between Cytus patterns and osu! beatmaps(beta)  
+### ext/osu & ext/deemo
+Conversion between Cytus patterns and osu! beatmaps/Deemo compositions(beta)  
 
 ### Editor
 Under construction
 
-### About author
+### Author
 Author: [Dewott(@GitHub)](https://github.com/Dewott/cytus)   
 Sina Weibo: [@双贝君](http://weibo.com/Dewott502/)  
 Begin time: 2014-01-27
