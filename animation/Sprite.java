@@ -9,11 +9,9 @@ import java.util.*;
 public class Sprite {
 	BufferedImage cimg = null;
 	String srcname = null;
-	BufferedImage dst = null;
 	int x = 0, y = 0;
 	int stime = 0, etime = 0;
 	double angle = 0, alpha = 1, sx = 1, sy = 1, ax = 0.5, ay = 0.5;
-	boolean special = false;
 	LinkedList<Transform> trans = new LinkedList<Transform>();
 	LinkedList<Sprite> childs = new LinkedList<Sprite>();
 	boolean bright = false;
@@ -45,12 +43,9 @@ public class Sprite {
 		if (angle != 0)
 			t.rotate(angle, cimg.getWidth() * ax, cimg.getHeight() * ay);
 
-		if (!special) {
-			g.setComposite(AlphaComposite.SrcOver.derive((float) alpha));
-			g.drawImage(cimg, t, null);
-			g.setComposite(AlphaComposite.SrcOver);
-		} else
-			ImageUtil.drawImageF(cimg, dst, t);
+		g.setComposite(AlphaComposite.SrcOver.derive((float) alpha));
+		g.drawImage(cimg, t, null);
+		g.setComposite(AlphaComposite.SrcOver);
 	}
 
 	public void scale(double sx, double sy) {
@@ -78,11 +73,6 @@ public class Sprite {
 
 	public void moveTo(double x, double y) {
 		moveTo((int) x, (int) y);
-	}
-
-	public void specialPaint(BufferedImage dst) {
-		special = true;
-		this.dst = dst;
 	}
 
 	public void addTransform(Transform t) {
@@ -122,7 +112,7 @@ public class Sprite {
 				cimg = SpriteLibrary.getBrighter(srcname);
 				srcname = "bright_" + srcname;
 			} else
-				ImageUtil.brighter(cimg, 1.5);
+				ImageUtil.brighter(cimg, 1.8);
 		}
 	}
 

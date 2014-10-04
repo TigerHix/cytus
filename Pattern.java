@@ -379,8 +379,8 @@ public class Pattern {
 		double fps = 1e9 / (mtime2 - mtime1);
 		String info = "Time:"
 				+ new java.text.DecimalFormat("0.000").format(time);
-		// info += " fps:" + (int) fps;
 		info += " TP:" + new java.text.DecimalFormat("00.00").format(tp);
+		info += " fps:" + (int) fps;
 
 		gg.drawString(info, 10, 20);
 		return (int) (mtime2 - mtime1);

@@ -40,22 +40,6 @@ public class ImageUtil {
 		return img;
 	}
 
-	public static int filterRGB(int rgb1, int rgb2) {
-		int a1 = (rgb1 >> 24) & 0xFF;
-		int r1 = (rgb1 >> 16) & 0xFF;
-		int g1 = (rgb1 >> 8) & 0xFF;
-		int b1 = rgb1 & 0xFF;
-		int a2 = (rgb2 >> 24) & 0xFF;
-		int r2 = (rgb2 >> 16) & 0xFF;
-		int g2 = (rgb2 >> 8) & 0xFF;
-		int b2 = rgb2 & 0xFF;
-		int a = 255 - (255 - a1) * (255 - a2) / 255;
-		int r = 255 - (255 - r1) * (255 - r2) / 255;
-		int g = 255 - (255 - g1) * (255 - g2) / 255;
-		int b = 255 - (255 - b1) * (255 - b2) / 255;
-		return (a << 24) | (r << 16) | (g << 8) | b;
-	}
-
 	public static int inverseRGB(int rgb) {
 		int a = (rgb >> 24) & 0xFF;
 		int r = 255 - (rgb >> 16) & 0xFF;
@@ -95,6 +79,52 @@ public class ImageUtil {
 		img.getRaster().setDataElements(0, 0, w, h, data);
 	}
 
+	public static void filterImage(BufferedImage img) {
+		// Better solution for removing black bg
+		int w = img.getWidth(), h = img.getHeight();
+		int data[] = (int[]) img.getRaster().getDataElements(0, 0, w, h, null);
+		for (int i = 0; i < data.length; i++) {
+			int r = (data[i] >> 16) & 0xFF;
+			int g = (data[i] >> 8) & 0xFF;
+			int b = data[i] & 0xFF;
+			// Mix red channel & green channel
+			int a1 = 255 - (255 - r) * (255 - g) / 255;
+			if (a1 != 0) {
+				r = Math.min((int) (r * 255 / a1), 255);
+				g = Math.min((int) (g * 255 / a1), 255);
+			}
+			// Add blue channel
+			int a2 = 255 - (255 - a1) * (255 - b) / 255;
+			r = r * a1 / 255;
+			g = g * a1 / 255;
+			if (a2 != 0) {
+				r = Math.min((int) (r * 255 / a2), 255);
+				g = Math.min((int) (g * 255 / a2), 255);
+				b = Math.min((int) (b * 255 / a2), 255);
+			}
+			data[i] = (a2 << 24) | (r << 16) | (g << 8) | b;
+		}
+		img.getRaster().setDataElements(0, 0, w, h, data);
+	}
+
+	@Deprecated
+	public static int filterRGB(int rgb1, int rgb2) {
+		int a1 = (rgb1 >> 24) & 0xFF;
+		int r1 = (rgb1 >> 16) & 0xFF;
+		int g1 = (rgb1 >> 8) & 0xFF;
+		int b1 = rgb1 & 0xFF;
+		int a2 = (rgb2 >> 24) & 0xFF;
+		int r2 = (rgb2 >> 16) & 0xFF;
+		int g2 = (rgb2 >> 8) & 0xFF;
+		int b2 = rgb2 & 0xFF;
+		int a = 255 - (255 - a1) * (255 - a2) / 255;
+		int r = 255 - (255 - r1) * (255 - r2) / 255;
+		int g = 255 - (255 - g1) * (255 - g2) / 255;
+		int b = 255 - (255 - b1) * (255 - b2) / 255;
+		return (a << 24) | (r << 16) | (g << 8) | b;
+	}
+
+	@Deprecated
 	public static void drawImageF(BufferedImage src, BufferedImage dst,
 			AffineTransform t) {
 		AffineTransformOp op = new AffineTransformOp(t,

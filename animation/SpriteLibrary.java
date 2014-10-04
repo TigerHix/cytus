@@ -92,6 +92,9 @@ public class SpriteLibrary {
 				out.getGraphics().drawImage(img, spsx, spsy, spsw, spsh, null);
 
 				out = ImageUtil.scale(out, objlist.get(key));
+				if ((key.indexOf("drag_light") != -1)
+						|| (key.indexOf("light_add2") != -1))
+					ImageUtil.filterImage(out);
 				map.put(key, out);
 			}
 		}
@@ -125,7 +128,7 @@ public class SpriteLibrary {
 			return map.get("bright_" + str);
 		else {
 			BufferedImage buf = ImageUtil.copyImage(map.get(str));
-			ImageUtil.brighter(buf, 1.5);
+			ImageUtil.brighter(buf, 1.8);
 			map.put("bright_" + str, buf);
 			return buf;
 		}

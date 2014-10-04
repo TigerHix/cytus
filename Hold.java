@@ -45,8 +45,8 @@ public class Hold extends Note {
 		light = new Sprite("light_add");
 		light.brighten();
 		light2 = AnimationPreset.get("light_add_2");
-		light2.specialPaint(p.buf);
 		light2.setAnchor(0.5, 0.3);
+		light2.setAlpha(0.8);
 		light2.brighten();
 		shadow = new Sprite("shadow");
 		shadow.setAnchor(0.5, 0.1);

@@ -17,10 +17,12 @@ public class Link extends Note {
 		head = new Sprite("drag_head_active");
 		shadow = new Sprite("shadow");
 		shadow.setAnchor(0.5, 0);
+		shadow.setAlpha(0.8);
 		arrow = AnimationPreset.get("arrow_flash");
 		dlight = AnimationPreset.get("drag_light");
-		dlight.specialPaint(p.buf);
 		dlight.setAnchor(0.5, 0.3);
+		dlight.setAlpha(0.3);
+		dlight.brighten();
 		arrexp = AnimationPreset.get("arrow_explode");
 	}
 
