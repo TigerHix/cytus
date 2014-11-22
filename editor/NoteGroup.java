@@ -4,7 +4,7 @@ import cytus.*;
 import java.util.*;
 
 public class NoteGroup {
-	LinkedList<Pattern.Note> notes = new LinkedList<Pattern.Note>();
+	LinkedList<NoteChart.Note> notes = new LinkedList<NoteChart.Note>();
 	String name = "";
 
 	public NoteGroup(String name) {

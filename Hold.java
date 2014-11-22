@@ -14,7 +14,8 @@ public class Hold extends Note {
 	Animation hold1 = null, hold2 = null, light2 = null;
 	boolean playsound = false;
 
-	public Hold(PatternPlayer p, int id, int x, int y, double time, double hold) {
+	public Hold(NoteChartPlayer p, int id, int x, int y, double time,
+			double hold) {
 		this.p = p;
 		this.id = id;
 		this.x = x;
@@ -28,8 +29,10 @@ public class Hold extends Note {
 		head.moveTo(x, y);
 		bshadow = new Sprite("beat_shadow");
 		bshadow.moveTo(x, y);
-		bshadow.addTransform(new LoopAlphaTransform(stime, 1 / 6.0, 1, 0));
-		bshadow.addTransform(new LoopScaleTransform(stime, 1 / 6.0, 0, 3));
+		bshadow.addTransform(new Transform(Transform.ALPHA, Transform.LINEAR,
+				stime, stime + 1 / 6.0, 1, 0).asLoopTransform());
+		bshadow.addTransform(new Transform(Transform.SCALE, Transform.LINEAR,
+				stime, stime + 1 / 6.0, 0, 3).asLoopTransform());
 		hold1 = AnimationPreset.get("hold_pressing_1");
 		hold2 = AnimationPreset.get("hold_pressing_2");
 		hold1.moveTo(x, y);
@@ -53,8 +56,10 @@ public class Hold extends Note {
 		nearadd.specialPaint(p.buf);
 
 		double ntime = time - p.beat;
-		nact.addTransform(new LinearAlphaTransform(ntime, ntime + p.beat / 2,
-				0.5, 1));
+		head.addTransform(new Transform(Transform.ALPHA, Transform.LINEAR,
+				ntime, ntime + p.beat / 2, 0.5, 1));
+		nact.addTransform(new Transform(Transform.ALPHA, Transform.LINEAR,
+				ntime, ntime + p.beat / 2, 0.5, 1));
 
 		if (page % 2 == 1) {
 			head.flip();
@@ -115,17 +120,18 @@ public class Hold extends Note {
 				time = etime;
 
 			int csy = (int) ((time - stime) / p.beat * 240) + 247;
-			csy = (int) (csy * PatternPlayer.SIZE_FIX);
+			csy = (int) (csy * NoteChartPlayer.SIZE_FIX);
 			int liney = p.calcY(time);
 			g.drawImage(bar, x - bar.getWidth() / 2, y, x + bar.getWidth() / 2,
 					liney, bar.getWidth(), bar.getHeight(), 0, 0, null);
 			head.paint(g, p.time);
 			// if (p.time + p.beat * 0.4 >= stime) nearadd.paint(g, p.time);
 
-			if (p.page < page)
-				nact.paint(g, p.time);
+			/*
+			 * if (p.page < page) nact.paint(g, p.time);
+			 */
 		}
-		if (PatternPlayer.prefs.get("showid") == 1) {
+		if (NoteChartPlayer.prefs.get("showid") == 1) {
 			g.setColor(Color.GREEN);
 			g.drawString(String.valueOf(id), x, y);
 			g.setColor(Color.BLACK);

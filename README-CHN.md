@@ -9,12 +9,7 @@ Cytus是台湾雷亚公司(`Rayark Inc.`)出品的音乐游戏
 ------------
 - [JMF(Java Media Framework,Oracle Technology Network,`v2.1.1e`)](http://www.oracle.com/technetwork/java/javase/download-142937.html)
 - [JLayer(`v1.0.1`)](http://www.javazoom.net/javalayer/javalayer.html)
-- [Apache Commons Collections(`v3.2.1`)](http://commons.apache.org/proper/commons-collections/)
-- [Apache Commons BeanUtils(`v1.9.1`)](http://commons.apache.org/proper/commons-beanutils/)
-- [Apache Commons Lang(`v2.6`)](http://commons.apache.org/proper/commons-lang/)
-- [Apache Commons Logging(`v1.1.3`)](http://commons.apache.org/proper/commons-logging/)
-- [EZMorph(`v1.0.6`)](http://sourceforge.net/projects/ezmorph/files/ezmorph/)
-- [Json-lib(`v2.4`)](http://sourceforge.net/projects/json-lib/)
+- [FastJSON](https://github.com/alibaba/fastjson)
 
 运行
 ------------
@@ -98,7 +93,7 @@ Cytus是台湾雷亚公司(`Rayark Inc.`)出品的音乐游戏
 
 ----------
 
-- note_effect
+- click_fx
 	- 描述:是否开启打击音效 
 	- 值: 0,1  
 	- 默认值: 1
@@ -121,7 +116,7 @@ Cytus是台湾雷亚公司(`Rayark Inc.`)出品的音乐游戏
 
 - width&height
     - 描述:设置画面宽度和高度
-    - 默认值: 960,640
+    - 默认值: 720,480
 
 ----------
 
@@ -129,6 +124,21 @@ Cytus是台湾雷亚公司(`Rayark Inc.`)出品的音乐游戏
     - 描述:显示Note序号
     - 值: 0,1
     - 默认值: 0
+
+----------
+
+- inputmode
+    - 描述:切换输入模式,0为Autoplay,1为类似osu的输入方式(测试)
+    - 值: 0,1
+    - 默认值: 0
+
+----------
+
+- nospecialpaint
+    - 描述:当fps较低时,关闭部分效果
+    - 值: 0,1
+    - 默认值: 0
+
 
 其他事项
 -------------
@@ -140,14 +150,48 @@ Cytus是台湾雷亚公司(`Rayark Inc.`)出品的音乐游戏
 实验性质的录像工具 
 
 ### ext/osu & ext/deemo
-cytus谱面和osu!,Deemo谱面的互相转换(测试中)  
-(暂时不可见)
+cytus谱面和osu!,Deemo谱面的互相转换(未测试)  
+
+### cover/SelectCover
+模拟歌曲封面动画 
 
 ### Editor
-谱面编辑器(制作中)  
-(暂时不可见)
+谱面编辑器(制作中,请给予帮助!)  
 
 ### 关于作者
 程序作者: [Dewott(@GitHub)](https://github.com/Dewott/cytus)   
 新浪微博: [@双贝君](http://weibo.com/Dewott502/)  
 开始时间: 2014-01-27
+
+Long Live the Rayark
+------------
+    MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+    MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+    MMMMMMMMMMMMMMMMMMMMMMMMMMMMMM;``````````````````OMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+    MMMMMMMMMMMMMMMMMMMMMMM8```````````````MM;``````````````NMMMMMMMMMMMMMMMMMMMMMMM
+    MMMMMMMMMMMMMMMMMMMM``````````````````MMMM``````````````````MMMMMMMMMMMMMMMMMMMM
+    MMMMMMMMMMMMMMMM`````````````````````8MMMMM;```````````````````'MMMMMMMMMMMMMMMM
+    MMMMMMMMMMMMMM``````````````````````MMMMMMMM``````````````````````MMMMMMMMMMMMMM
+    MMMMMMMMMMMM```````````````````````;MMMMMMMMM'``````````````````````MMMMMMMMMMMM
+    MMMMMMMMMM````````````````````````MMMMMMMMMMMM````````````````````````MMMMMMMMMM
+    MMMMMMMM'````````````````````````OMMMMMMMM`'MMM;```````````````````````OMMMMMMMM
+    MMMMMMM8````````````````````````8MMMMMMMM```;MMM````````````````````````MMMMMMMM
+    MMMMMM;````````````````````````'MMMMMMMM``````MMM'MMMMMMMMMN`````````````8MMMMMM
+    MMMMMM````````````````````````NMMMMMMM`NO;`````NMM`OMMMMMMMMMMM```````````MMMMMM
+    MMMMM8``````````````'8MMO;````MMMMMMM```````````MMM'```OMMMMMMM```````````8MMMMM
+    MMMMM'``````````````````````OMMMMMMM``````````````MM```'MMMMM8````````````;MMMMM
+    MMMMM'`````````````````````'MMMMMM`````````````````MM'MMMMM8``````````````;MMMMM
+    MMMMM8````````````````````'MMMMMM```````````````````MMMMM;````````````````8MMMMM
+    MMMMMM````````````````````MMMMMN`````````````````8MMMM`;``````````````````MMMMMM
+    MMMMMMO`````````````````;MMMMM````````````````MMMMM````M`````````````````NMMMMMM
+    MMMMMMM;````````````````MMMMM``````````````MMMMN````````M'``````````````8MMMMMMM
+    MMMMMMMM;`````````````'MMMMO```````````MMMM8`````````````8`````````````8MMMMMMMM
+    MMMMMMMMMM````````````MMMM``````````````````MMMN``````````;'``````````MMMMMMMMMM
+    MMMMMMMMMMMM`````````MMMM```````````````````````;MM'````````````````MMMMMMMMMMMM
+    MMMMMMMMMMMMMM``````MMM;``````````````````````````````M;`````'````MMMMMMMMMMMMMM
+    MMMMMMMMMMMMMMMM;``MMM`````````````````````````````````````````;MMMMMMMMMMMMMMMM
+    MMMMMMMMMMMMMMMMMMMMN```````````````````````````````````````OMMMMMMMMMMMMMMMMMMM
+    MMMMMMMMMMMMMMMMMMMMMMMM````````````````````````````````MMMMMMMMMMMMMMMMMMMMMMMM
+    MMMMMMMMMMMMMMMMMMMMMMMMMMMMMM8'````````````````;NMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+    MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+    MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM

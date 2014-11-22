@@ -5,16 +5,11 @@ Official Website: [http://rayark.com/g/cytus/](http://rayark.com/g/cytus/)
 
 This program is written in Java and tested on Windows.  
 
-External Libraries
+Dependencies
 ------------
 - [JMF(Java Media Framework,Oracle Technology Network,`v2.1.1e`)](http://www.oracle.com/technetwork/java/javase/download-142937.html)
 - [JLayer(`v1.0.1`)](http://www.javazoom.net/javalayer/javalayer.html)
-- [Apache Commons Collections(`v3.2.1`)](http://commons.apache.org/proper/commons-collections/)
-- [Apache Commons BeanUtils(`v1.9.1`)](http://commons.apache.org/proper/commons-beanutils/)
-- [Apache Commons Lang(`v2.6`)](http://commons.apache.org/proper/commons-lang/)
-- [Apache Commons Logging(`v1.1.3`)](http://commons.apache.org/proper/commons-logging/)
-- [EZMorph(`v1.0.6`)](http://sourceforge.net/projects/ezmorph/files/ezmorph/)
-- [Json-lib(`v2.4`)](http://sourceforge.net/projects/json-lib/)
+- [FastJSON](https://github.com/alibaba/fastjson)
 
 To Run
 ------------
@@ -23,7 +18,7 @@ Main class: cytus.Main
 > java cytus.Main &lt;songtitle&gt;
 
 Put *assets*  in the same folder as game data  
-(Downloads of Cytus Lambda *assets* are NOT provided due to copyright issues)
+(Downloads of *assets* are NOT provided due to copyright issues)
 
 ### Folder Structure of *assets*
 - assets  
@@ -130,6 +125,21 @@ Put *assets*  in the same folder as game data
     - Value: 0,1
     - Default Value:0
 
+----------
+
+- inputmode
+    - Description: 0 for Autoplay,1 for playing like osu!(Testing)
+    - Value: 0,1
+    - Default Value: 0
+
+----------
+
+- nospecialpaint
+    - Description: Disable "Add" blending effects to increase fps
+    - Value: 0,1
+    - Default Value: 0
+
+
 Others
 -------------
 
@@ -140,15 +150,48 @@ Others
 An experimental tool for recording videos 
 
 ### ext/osu & ext/deemo
-Conversion between Cytus patterns and osu! beatmaps/Deemo compositions(beta)  
+Conversion between Cytus patterns and osu! beatmaps/Deemo compositions(Untested)  
 
-[Temporarily removed]
+### cover/SelectCover
+Simulate song covers 
+
 ### Editor
-Under construction 
-
-[Temporarily removed]
+Under construction(Needs your help!)
 
 ### Author
 Author: [Dewott(@GitHub)](https://github.com/Dewott/cytus)   
 Sina Weibo: [@双贝君](http://weibo.com/Dewott502/)  
 Begin time: 2014-01-27
+
+Long Live the Rayark
+------------
+    MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+    MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+    MMMMMMMMMMMMMMMMMMMMMMMMMMMMMM;``````````````````OMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+    MMMMMMMMMMMMMMMMMMMMMMM8```````````````MM;``````````````NMMMMMMMMMMMMMMMMMMMMMMM
+    MMMMMMMMMMMMMMMMMMMM``````````````````MMMM``````````````````MMMMMMMMMMMMMMMMMMMM
+    MMMMMMMMMMMMMMMM`````````````````````8MMMMM;```````````````````'MMMMMMMMMMMMMMMM
+    MMMMMMMMMMMMMM``````````````````````MMMMMMMM``````````````````````MMMMMMMMMMMMMM
+    MMMMMMMMMMMM```````````````````````;MMMMMMMMM'``````````````````````MMMMMMMMMMMM
+    MMMMMMMMMM````````````````````````MMMMMMMMMMMM````````````````````````MMMMMMMMMM
+    MMMMMMMM'````````````````````````OMMMMMMMM`'MMM;```````````````````````OMMMMMMMM
+    MMMMMMM8````````````````````````8MMMMMMMM```;MMM````````````````````````MMMMMMMM
+    MMMMMM;````````````````````````'MMMMMMMM``````MMM'MMMMMMMMMN`````````````8MMMMMM
+    MMMMMM````````````````````````NMMMMMMM`NO;`````NMM`OMMMMMMMMMMM```````````MMMMMM
+    MMMMM8``````````````'8MMO;````MMMMMMM```````````MMM'```OMMMMMMM```````````8MMMMM
+    MMMMM'``````````````````````OMMMMMMM``````````````MM```'MMMMM8````````````;MMMMM
+    MMMMM'`````````````````````'MMMMMM`````````````````MM'MMMMM8``````````````;MMMMM
+    MMMMM8````````````````````'MMMMMM```````````````````MMMMM;````````````````8MMMMM
+    MMMMMM````````````````````MMMMMN`````````````````8MMMM`;``````````````````MMMMMM
+    MMMMMMO`````````````````;MMMMM````````````````MMMMM````M`````````````````NMMMMMM
+    MMMMMMM;````````````````MMMMM``````````````MMMMN````````M'``````````````8MMMMMMM
+    MMMMMMMM;`````````````'MMMMO```````````MMMM8`````````````8`````````````8MMMMMMMM
+    MMMMMMMMMM````````````MMMM``````````````````MMMN``````````;'``````````MMMMMMMMMM
+    MMMMMMMMMMMM`````````MMMM```````````````````````;MM'````````````````MMMMMMMMMMMM
+    MMMMMMMMMMMMMM``````MMM;``````````````````````````````M;`````'````MMMMMMMMMMMMMM
+    MMMMMMMMMMMMMMMM;``MMM`````````````````````````````````````````;MMMMMMMMMMMMMMMM
+    MMMMMMMMMMMMMMMMMMMMN```````````````````````````````````````OMMMMMMMMMMMMMMMMMMM
+    MMMMMMMMMMMMMMMMMMMMMMMM````````````````````````````````MMMMMMMMMMMMMMMMMMMMMMMM
+    MMMMMMMMMMMMMMMMMMMMMMMMMMMMMM8'````````````````;NMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+    MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+    MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM

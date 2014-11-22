@@ -10,9 +10,9 @@ import javax.imageio.*;
 import javax.media.*;
 import javazoom.jl.converter.*;
 
-public class PatternPlayer {
+public class NoteChartPlayer {
 	final static String path = "assets/songs/";
-	public static HashMap<String, Integer> prefs = new HashMap<String, Integer>();
+	public static LinkedHashMap<String, Integer> prefs = new LinkedHashMap<String, Integer>();
 	public static int WIDTH = 960, HEIGHT = 640;
 	public static double SIZE_FIX = HEIGHT / 640.0;
 	static {
@@ -23,6 +23,7 @@ public class PatternPlayer {
 			prefs.put("bg", 1);
 			prefs.put("popupmode", 2);
 			prefs.put("convertmp3", 1);
+			prefs.put("nospecialpaint", 0);
 			prefs.put("width", 720);
 			prefs.put("height", 480);
 			prefs.put("showid", 0);
@@ -58,6 +59,8 @@ public class PatternPlayer {
 				prefs.put("popupmode", 2);
 			if (!prefs.containsKey("convertmp3"))
 				prefs.put("convertmp3", 1);
+			if (!prefs.containsKey("nospecialpaint"))
+				prefs.put("nospecialpaint", 0);
 			if (!prefs.containsKey("width"))
 				prefs.put("width", 720);
 			if (!prefs.containsKey("height"))
@@ -86,10 +89,10 @@ public class PatternPlayer {
 
 	public double pshift = 0, beat = 0, time = 0;
 	public int page = 0;
-	int liney = 0, combo = 0, ncount = 0;
+	int liney = 0, combo = 0, maxcombo = 0, ncount = 0;
 	double score = 0, tp = 0;
 
-	public Pattern pdata = null;
+	public NoteChart pdata = null;
 	public LinkedList<Note> notes = new LinkedList<Note>();
 	public LinkedList<Note> copy = new LinkedList<Note>();
 	LinkedList<Animation> animqueue = new LinkedList<Animation>();
@@ -107,18 +110,18 @@ public class PatternPlayer {
 	public Player player = null; // Media Player
 	JSPlayer sound = null;
 
-	public PatternPlayer(String name, String diff) throws Exception {
+	public NoteChartPlayer(String name, String diff) throws Exception {
 		BufferedReader in = new BufferedReader(new FileReader(path + name + "/"
 				+ name + "." + diff + ".txt"));
 
 		if (in.readLine().equals("VERSION 2"))
-			pdata = PatternReader2.read(in);
+			pdata = NoteChartReader2.read(in);
 		else
-			pdata = PatternReader1.read(in);
+			pdata = NoteChartReader1.read(in);
 
 		in.close();
 
-		loadPatternData(pdata);
+		loadNoteChart(pdata);
 
 		if (prefs.get("convertmp3") == 1) {
 			new Converter().convert(path + name + "/" + name + ".mp3",
@@ -133,18 +136,25 @@ public class PatternPlayer {
 		Graphics g = bg.getGraphics();
 		if (prefs.get("bg") == 1) {
 			BufferedImage bgfile = null;
+			/*
+			 * try { if (new File(path + name + "/" + name +
+			 * "_bg.png").exists()) bgfile = ImageIO.read(new File(path + name +
+			 * "/" + name + "_bg.png")); else if (new File(path + name +
+			 * "/bg.png").exists()) bgfile = ImageIO.read(new File(path + name +
+			 * "/bg.png")); else bgfile = ImageIO.read(new File(path + name +
+			 * "/" + name + ".png"));
+			 * 
+			 * bgfile = ImageUtil.scale(bgfile, -1, HEIGHT); g.drawImage(bgfile,
+			 * (WIDTH - bgfile.getWidth()) / 2, 0, null); } catch (Exception e)
+			 * { e.printStackTrace(); }
+			 */
 			try {
-				if (new File(path + name + "/" + name + "_bg.png").exists())
-					bgfile = ImageIO.read(new File(path + name + "/" + name
-							+ "_bg.png"));
-				else if (new File(path + name + "/bg.png").exists())
-					bgfile = ImageIO.read(new File(path + name + "/bg.png"));
-				else
-					bgfile = ImageIO.read(new File(path + name + "/" + name
-							+ ".png"));
-
-				bgfile = ImageUtil.scale(bgfile, -1, HEIGHT);
-				g.drawImage(bgfile, (WIDTH - bgfile.getWidth()) / 2, 0, null);
+				Sprite cover = new cytus.cover.SelectCover(name);
+				BufferedImage buf = new BufferedImage(1024, 683,
+						BufferedImage.TYPE_INT_ARGB);
+				cover.paint((Graphics2D) buf.getGraphics(), 10); // time=10s
+				bgfile = ImageUtil.scale(buf, WIDTH, HEIGHT);
+				g.drawImage(bgfile, 0, 0, null);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -182,14 +192,14 @@ public class PatternPlayer {
 		gg.setColor(Color.BLACK);
 	}
 
-	public void loadPatternData(Pattern pdata) {
+	public void loadNoteChart(NoteChart pdata) {
 		this.pdata = pdata;
 
 		beat = pdata.beat;
 		pshift = pdata.pshift;
 		ncount = pdata.notes.size();
 		notes.clear();
-		for (Pattern.Note pnote : pdata.notes)
+		for (NoteChart.Note pnote : pdata.notes)
 			if (pnote.linkref == -1) {
 				if (pnote.holdtime == 0)
 					this.notes.add(new Circle(this, pnote.id, calcX(pnote.x),
@@ -198,10 +208,10 @@ public class PatternPlayer {
 					this.notes.add(new Hold(this, pnote.id, calcX(pnote.x),
 							calcY(pnote.time), pnote.time, pnote.holdtime));
 			}
-		for (Pattern.Link plink : pdata.links) {
+		for (NoteChart.Link plink : pdata.links) {
 			Link link = new Link(this);
 			for (int i = 0; i < plink.n; i++) {
-				Pattern.Note node = plink.nodes.get(i);
+				NoteChart.Note node = plink.nodes.get(i);
 				link.nodes.add(link.new Node(node.id, calcX(node.x),
 						calcY(node.time), node.time));
 			}
@@ -261,6 +271,8 @@ public class PatternPlayer {
 			result[2]++;
 			break;
 		}
+		if (combo > maxcombo)
+			maxcombo = combo;
 		score += 900000.0 / ncount * sratio + combo * 200000.0 / ncount
 				/ (ncount + 1);
 		tp += 100.0 / ncount * tpratio;
@@ -328,6 +340,7 @@ public class PatternPlayer {
 		result[2] = 0;
 		result[3] = 0;
 		combo = 0;
+		maxcombo = 0;
 		score = 0;
 		tp = 0;
 	}
@@ -335,7 +348,7 @@ public class PatternPlayer {
 	public int paint() {
 		long mtime1 = System.nanoTime();
 		gg.drawImage(bg, 0, 0, null);
-		gg.setComposite(AlphaComposite.SrcOver.derive(0.8f));
+		gg.setComposite(AlphaComposite.SrcOver.derive(0.75f));
 		gg.setColor(Color.WHITE);
 		gg.fillRect(0, 0, WIDTH, HEIGHT);
 		gg.setColor(Color.BLACK);
@@ -408,7 +421,7 @@ public class PatternPlayer {
 		}
 
 		BufferedImage sp = FontLibrary.getScore(score);
-		gg.drawImage(sp, WIDTH - sp.getWidth(), HEIGHT / 40, null);
+		gg.drawImage(sp, WIDTH - sp.getWidth(), HEIGHT / 50, null);
 
 		long mtime2 = System.nanoTime();
 		double fps = 1e9 / (mtime2 - mtime1);

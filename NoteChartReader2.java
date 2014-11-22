@@ -3,8 +3,8 @@ package cytus;
 import java.io.*;
 import java.util.*;
 
-public class PatternReader2 {
-	public static Pattern read(BufferedReader in) throws Exception {
+public class NoteChartReader2 {
+	public static NoteChart read(BufferedReader in) throws Exception {
 		double beat = 0, pshift = 0;
 
 		in.readLine();
@@ -15,7 +15,7 @@ public class PatternReader2 {
 		size = size.substring(10);
 		beat = Double.parseDouble(size);
 
-		Pattern pdata = new Pattern(beat, pshift);
+		NoteChart pdata = new NoteChart(beat, pshift);
 
 		int count = 0, linkid = 0;
 		String str = in.readLine();
@@ -23,7 +23,7 @@ public class PatternReader2 {
 			if (str.indexOf("LINK") != -1) {
 				str = str.substring(5);
 				Scanner s = new Scanner(str);
-				Pattern.Link l = pdata.new Link(linkid++);
+				NoteChart.Link l = pdata.new Link(linkid++);
 				while (s.hasNext())
 					l.add(s.nextInt());
 				pdata.links.add(l);

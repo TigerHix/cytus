@@ -19,13 +19,7 @@ public class ImageUtil {
 			return src;
 		int w = (int) (src.getWidth() * scale);
 		int h = (int) (src.getHeight() * scale);
-		BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g = (Graphics2D) img.getGraphics();
-		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-				RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-		g.drawImage(src, 0, 0, w, h, null);
-		g.dispose();
-		return img;
+		return scale(src, w, h);
 	}
 
 	public static BufferedImage scale(BufferedImage src, int width, int height) {
@@ -45,7 +39,7 @@ public class ImageUtil {
 		return img;
 	}
 
-	public static BufferedImage flip(BufferedImage src) {
+	public static BufferedImage flipV(BufferedImage src) {
 		int w = src.getWidth();
 		int h = src.getHeight();
 		BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
@@ -53,6 +47,18 @@ public class ImageUtil {
 		for (int i = 0; i < w; i++)
 			for (int j = 0; j < h; j++)
 				img.setRGB(i, j, src.getRGB(i, h - j - 1));
+
+		return img;
+	}
+
+	public static BufferedImage flipH(BufferedImage src) {
+		int w = src.getWidth();
+		int h = src.getHeight();
+		BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+
+		for (int i = 0; i < w; i++)
+			for (int j = 0; j < h; j++)
+				img.setRGB(i, j, src.getRGB(w - i - 1, j));
 
 		return img;
 	}
@@ -73,11 +79,19 @@ public class ImageUtil {
 		return (a << 24) | (r << 16) | (g << 8) | b;
 	}
 
-	public static int inverseRGB(int rgb) {
-		int a = (rgb >> 24) & 0xFF;
-		int r = 255 - (rgb >> 16) & 0xFF;
-		int g = 255 - (rgb >> 8) & 0xFF;
-		int b = 255 - rgb & 0xFF;
+	public static int multiplyRGB(int rgb1, int rgb2) {
+		int a1 = (rgb1 >> 24) & 0xFF;
+		int r1 = (rgb1 >> 16) & 0xFF;
+		int g1 = (rgb1 >> 8) & 0xFF;
+		int b1 = rgb1 & 0xFF;
+		int a2 = (rgb2 >> 24) & 0xFF;
+		int r2 = (rgb2 >> 16) & 0xFF;
+		int g2 = (rgb2 >> 8) & 0xFF;
+		int b2 = rgb2 & 0xFF;
+		int a = a1 * a2 / 255;
+		int r = r1 * r2 / 255;
+		int g = g1 * g2 / 255;
+		int b = b1 * b2 / 255;
 		return (a << 24) | (r << 16) | (g << 8) | b;
 	}
 
@@ -92,14 +106,14 @@ public class ImageUtil {
 		return (a << 24) | (r << 16) | (g << 8) | b;
 	}
 
-	public static int calcAberration(int rgb1, int rgb2) {
-		int r1 = (rgb1 >> 16) & 0xFF;
-		int g1 = (rgb1 >> 8) & 0xFF;
-		int b1 = rgb1 & 0xFF;
-		int r2 = (rgb2 >> 16) & 0xFF;
-		int g2 = (rgb2 >> 8) & 0xFF;
-		int b2 = rgb2 & 0xFF;
-		return Math.abs(r1 - r2) + Math.abs(g1 - g2) + Math.abs(b1 - b2);
+	public static int alphaPremultiply(int rgb, double alpha) {
+		int r = (rgb >> 16) & 0xFF;
+		int g = (rgb >> 8) & 0xFF;
+		int b = rgb & 0xFF;
+		r = (int) (r * alpha);
+		g = (int) (g * alpha);
+		b = (int) (b * alpha);
+		return (255 << 24) | (r << 16) | (g << 8) | b;
 	}
 
 	public static void brighter(BufferedImage img, double d) {
@@ -112,29 +126,21 @@ public class ImageUtil {
 		img.getRaster().setDataElements(0, 0, w, h, data);
 	}
 
-	public static void inverseColor(BufferedImage img) {
+	public static void fillColor(BufferedImage img, int color) {
 		int w = img.getWidth(), h = img.getHeight();
 		int data[] = (int[]) img.getRaster().getDataElements(0, 0, w, h, null);
 
 		for (int i = 0; i < data.length; i++)
-			data[i] = inverseRGB(data[i]);
-
-		img.getRaster().setDataElements(0, 0, w, h, data);
-	}
-
-	public static void replaceColor(BufferedImage img, int color1, int color2) {
-		int w = img.getWidth(), h = img.getHeight();
-		int data[] = (int[]) img.getRaster().getDataElements(0, 0, w, h, null);
-
-		for (int i = 0; i < data.length; i++)
-			if (calcAberration(data[i], color1) <= 128)
-				data[i] = color2;
+			data[i] = multiplyRGB(data[i], color);
 
 		img.getRaster().setDataElements(0, 0, w, h, data);
 	}
 
 	public static void drawImageF(BufferedImage src, BufferedImage dst,
-			AffineTransform t) {
+			AffineTransform t, double alpha) {
+		if (NoteChartPlayer.prefs.get("nospecialpaint") == 1)
+			return;
+
 		AffineTransformOp op = new AffineTransformOp(t,
 				AffineTransformOp.TYPE_BICUBIC);
 		Rectangle2D.Float bounds = (Rectangle2D.Float) op.getBounds2D(src);
@@ -155,8 +161,14 @@ public class ImageUtil {
 		int data2[] = (int[]) dst.getRaster().getDataElements(x2, y2, w, h,
 				null);
 
-		for (int i = 0; i < data1.length; i++)
-			data2[i] = filterRGB(data1[i], data2[i]);
+		if (alpha == 1) {
+			for (int i = 0; i < data1.length; i++)
+				data2[i] = filterRGB(data1[i], data2[i]);
+		} else {
+			for (int i = 0; i < data1.length; i++)
+				data2[i] = filterRGB(alphaPremultiply(data1[i], alpha),
+						data2[i]);
+		}
 
 		dst.getRaster().setDataElements(x2, y2, w, h, data2);
 	}

@@ -13,7 +13,7 @@ public class Link extends Note {
 	Animation arrow = null, arrexp = null, dlight = null, blow = null;
 	boolean endblow = false;
 
-	public Link(PatternPlayer p) {
+	public Link(NoteChartPlayer p) {
 		this.p = p;
 		head = new Sprite("drag_head_active");
 		shadow = new Sprite("shadow");
@@ -41,7 +41,7 @@ public class Link extends Note {
 
 	public void paint(Graphics2D g) {
 		int i = 0;
-		double nodesize = 24 * PatternPlayer.SIZE_FIX;
+		double nodesize = 24 * NoteChartPlayer.SIZE_FIX;
 		if (p.time >= stime) {
 			for (i = n - 1; i > 0; i--)
 				if (nodes.get(i).stime >= p.time) {
@@ -67,9 +67,10 @@ public class Link extends Note {
 					Node lastnode = nodes.get(n - 1);
 					if (lastnode.judgement != -1) {
 						dlight.moveTo(lastnode.x, lastnode.y);
-						dlight.addTransform(new RotateTransform(etime,
-								etime + 1 / 3.0, 0, -Math.PI));
-						blow.addChild(dlight);
+						dlight.addTransform(new Transform(Transform.ROTATION,
+								Transform.LINEAR, etime, etime + 1 / 3.0, 0,
+								-Math.PI));
+						blow.addChild(dlight, true);
 						arrexp.play(p);
 						blow.play(p);
 					}
@@ -147,24 +148,24 @@ public class Link extends Note {
 
 		double ntime = page * p.beat - p.pshift;
 		head.clearTransforms();
-		head.addTransform(new LinearAlphaTransform(stime - p.beat, stime
-				- p.beat / 2, 0, 1));
+		head.addTransform(new Transform(Transform.ALPHA, Transform.LINEAR,
+				stime - p.beat, stime - p.beat / 2, 0, 1));
 
-		switch (PatternPlayer.prefs.get("popupmode")) {
+		switch (NoteChartPlayer.prefs.get("popupmode")) {
 		case 0:// None
 			break;
 		case 1:// Default
-			head.addTransform(new LinearScaleTransform(stime - p.beat / 2,
-					stime, 0.8, 1));
-			nearadd.addTransform(new LinearScaleTransform(stime - p.beat / 2,
-					stime, 0.8, 1));
+			head.addTransform(new Transform(Transform.SCALE, Transform.LINEAR,
+					stime - p.beat / 2, stime, 0.8, 1));
+			nearadd.addTransform(new Transform(Transform.SCALE,
+					Transform.LINEAR, stime - p.beat / 2, stime, 0.8, 1));
 			break;
 
 		case 2:// Grouped
-			head.addTransform(new LinearScaleTransform(ntime - p.beat / 2,
-					ntime, 0.5, 1));
-			nearadd.addTransform(new LinearScaleTransform(ntime - p.beat / 2,
-					ntime, 0.5, 1));
+			head.addTransform(new Transform(Transform.SCALE, Transform.LINEAR,
+					ntime - p.beat / 2, ntime, 0.5, 1));
+			nearadd.addTransform(new Transform(Transform.SCALE,
+					Transform.LINEAR, ntime - p.beat / 2, ntime, 0.5, 1));
 			break;
 		}
 
@@ -173,11 +174,12 @@ public class Link extends Note {
 		blow = new Animation("drag_head_blow", etime, etime + 1 / 3.0);
 		blow.moveTo(nodes.get(n - 1).x, nodes.get(n - 1).y);
 		blow.clearTransforms();
-		blow.addTransform(new RotateTransform(etime, etime + 1 / 3.0, 0,
-				-Math.PI * 1.5));
-		blow.addTransform(new LinearScaleTransform(etime, etime + 1 / 3.0, 1, 2));
-		blow.addTransform(new LinearAlphaTransform(etime, etime + 1 / 3.0, 1,
-				0.5));
+		blow.addTransform(new Transform(Transform.ROTATION, Transform.LINEAR,
+				etime, etime + 1 / 3.0, 0, -Math.PI * 1.5));
+		blow.addTransform(new Transform(Transform.SCALE, Transform.LINEAR,
+				etime, etime + 1 / 3.0, 1, 2));
+		blow.addTransform(new Transform(Transform.ALPHA, Transform.LINEAR,
+				etime, etime + 1 / 3.0, 1, 0.5));
 	}
 
 	public class Node extends Note {
@@ -201,13 +203,13 @@ public class Link extends Note {
 
 			ps = new Sprite("node_flash_04");
 			ps.moveTo(x, y);
-			ps.addTransform(new LinearAlphaTransform(time - p.beat, time
-					- p.beat / 2, 0, 1));
+			ps.addTransform(new Transform(Transform.ALPHA, Transform.LINEAR,
+					time - p.beat, time - p.beat / 2, 0, 1));
 
 			nps = new Sprite("node_flash_01");
 			nps.moveTo(x, y);
-			nps.addTransform(new LinearAlphaTransform(time - p.beat, time
-					- p.beat / 2, 0, 1));
+			nps.addTransform(new Transform(Transform.ALPHA, Transform.LINEAR,
+					time - p.beat, time - p.beat / 2, 0, 1));
 		}
 
 		public void paint(Graphics2D g) {
@@ -230,14 +232,14 @@ public class Link extends Note {
 				p.addCombo(-1); // Miss
 				Animation judgeanim = AnimationPreset.get("judge_miss");
 				judgeanim.moveTo(x, y);
-				ps.addTransform(new LinearAlphaTransform(p.time,
-						p.time + 1 / 3.0, 1, 0));
-				judgeanim.addChild(ps);
+				ps.addTransform(new Transform(Transform.ALPHA,
+						Transform.LINEAR, p.time, p.time + 1 / 3.0, 1, 0));
+				judgeanim.addChild(ps, true);
 				judgeanim.play(p, p.time);
 				removed = true;
 			}
 
-			if (PatternPlayer.prefs.get("showid") == 1) {
+			if (NoteChartPlayer.prefs.get("showid") == 1) {
 				g.setColor(Color.GREEN);
 				g.drawString(String.valueOf(id), x, y);
 				g.setColor(Color.BLACK);

@@ -1,6 +1,6 @@
 package cytus.animation;
 
-import net.sf.json.*;
+import com.alibaba.fastjson.*;
 import java.io.*;
 import java.util.*;
 
@@ -28,16 +28,14 @@ public class AnimationPreset {
 			}
 
 			r.close();
-			JSONObject obj = JSONObject.fromObject(s);
-			map1.put(flist[i], obj.getDouble("length"));
+			JSONObject obj = JSON.parseObject(s);
+			map1.put(flist[i], obj.getDoubleValue("length"));
 			map2.put(flist[i], obj.getString("mode").equals("once"));
-			JSONArray arr = JSONArray.fromObject(obj.getString("frames"));
-			Object f[] = arr.toArray();
-			String frames[] = new String[f.length];
-
-			for (int j = 0; j < frames.length; j++) {
-				JSONArray arr2 = JSONArray.fromObject(f[j]);
-				frames[j] = (String) arr2.get(1);
+			JSONArray arr = obj.getJSONArray("frames");
+			String frames[] = new String[arr.size()];
+			for (int j = 0; j < arr.size(); j++) {
+				JSONArray arr2 = arr.getJSONArray(j);
+				frames[j] = arr2.getString(1);
 			}
 
 			map3.put(flist[i], frames);

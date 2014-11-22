@@ -3,12 +3,12 @@ package cytus;
 import java.util.*;
 import cytus.editor.*;
 
-public class Pattern implements Cloneable {
+public class NoteChart implements Cloneable {
 	public double beat = 0, offset = 0, pshift = 0;
-	public LinkedList<Pattern.Note> notes = new LinkedList<Pattern.Note>();
-	public LinkedList<Pattern.Link> links = new LinkedList<Pattern.Link>();
+	public LinkedList<NoteChart.Note> notes = new LinkedList<NoteChart.Note>();
+	public LinkedList<NoteChart.Link> links = new LinkedList<NoteChart.Link>();
 
-	public Pattern(double beat, double pshift) {
+	public NoteChart(double beat, double pshift) {
 		this.beat = beat;
 		this.pshift = pshift;
 	}
@@ -169,7 +169,7 @@ public class Pattern implements Cloneable {
 	}
 
 	public Object clone() {
-		Pattern copy = new Pattern(beat, pshift);
+		NoteChart copy = new NoteChart(beat, pshift);
 		copy.offset = offset;
 		for (Note n : this.notes)
 			copy.notes.add(copy.new Note(n.id, n.time, n.x, n.holdtime));

@@ -10,8 +10,8 @@ public class Main extends JFrame {
 	public Main(String str) throws Exception {
 		super("Cytus");
 		System.setProperty("sun.java2d.opengl", "true");
-		PatternPlayer p = new PatternPlayer(str, "hard");
-		setSize(PatternPlayer.WIDTH + 6, PatternPlayer.HEIGHT + 8);
+		NoteChartPlayer p = new NoteChartPlayer(str, "hard");
+		setSize(NoteChartPlayer.WIDTH + 6, NoteChartPlayer.HEIGHT + 8);
 		setResizable(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();

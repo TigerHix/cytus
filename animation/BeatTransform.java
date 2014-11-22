@@ -10,7 +10,7 @@ public class BeatTransform extends Transform {
 		this.beat = beat;
 	}
 
-	public void adjust(double time) {
+	public void adjust(Sprite s, double time) {
 		if (time < stime)
 			return;
 

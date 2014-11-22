@@ -1,13 +1,9 @@
 package cytus.animation;
 
 import cytus.*;
-import net.sf.json.*;
-
 import java.awt.*;
 import java.awt.image.*;
-
 import javax.imageio.*;
-
 import java.io.*;
 import java.util.*;
 
@@ -26,84 +22,25 @@ public class SpriteLibrary {
 		while (str1 != null) {
 			String pair[] = str1.split("\\t");
 			objlist.put(pair[0], Double.parseDouble(pair[1])
-					* PatternPlayer.SIZE_FIX);
+					* NoteChartPlayer.SIZE_FIX);
 			str1 = r1.readLine();
 		}
 		r1.close();
 
 		for (int i = 0; i < 5; i++) {
-			BufferedImage src = ImageIO.read(new File("assets/ui/GamePlay/"
-					+ flist[i] + ".png"));
-			BufferedReader r2 = new BufferedReader(new FileReader(
-					"assets/ui/GamePlay/" + flist[i] + ".json"));
-
-			String s = "";
-			String str2 = r2.readLine();
-
-			while (str2 != null) {
-				s += str2;
-				str2 = r2.readLine();
-			}
-
-			r2.close();
-
-			JSONObject obj = JSONObject.fromObject(s);
-			s = obj.getString("frames");
-			obj = JSONObject.fromObject(s);
-
-			Iterator t = obj.keys();
-
-			while (t.hasNext()) {
-				String key = (String) t.next();
-				if (!objlist.containsKey(key))
-					continue;
-
-				JSONObject frame = JSONObject.fromObject(obj.getString(key));
-				JSONObject fpos = JSONObject.fromObject(frame
-						.getString("frame"));
-				int x = fpos.getInt("x");
-				int y = fpos.getInt("y");
-				int w = fpos.getInt("w");
-				int h = fpos.getInt("h");
-
-				if ((w == 0) || (h == 0)) {
-					map.put(key, new BufferedImage(1, 1,
-							BufferedImage.TYPE_INT_ARGB));
-					continue;
-				}
-
-				JSONObject srcsize = JSONObject.fromObject(frame
-						.getString("sourceSize"));
-				int srcw = srcsize.getInt("w");
-				int srch = srcsize.getInt("h");
-				JSONObject sprsrcsize = JSONObject.fromObject(frame
-						.getString("spriteSourceSize"));
-				int spsx = sprsrcsize.getInt("x");
-				int spsy = sprsrcsize.getInt("y");
-				int spsw = sprsrcsize.getInt("w");
-				int spsh = sprsrcsize.getInt("h");
-
-				BufferedImage img = new BufferedImage(w, h,
-						BufferedImage.TYPE_INT_ARGB);
-				img.getGraphics().drawImage(src, 0, 0, w, h, x, y, x + w,
-						y + h, null);
-
-				BufferedImage out = new BufferedImage(srcw, srch,
-						BufferedImage.TYPE_INT_ARGB);
-				out.getGraphics().drawImage(img, spsx, spsy, spsw, spsh, null);
-
-				out = ImageUtil.scale(out, objlist.get(key));
-				map.put(key, out);
-			}
+			Atlas atlas = new Atlas("assets/ui/GamePlay/", flist[i]);
+			map.putAll(atlas.map);
+		}
+		map.keySet().retainAll(objlist.keySet());
+		for (Map.Entry<String, Double> entry : objlist.entrySet()) {
+			BufferedImage img = map.get(entry.getKey());
+			img = ImageUtil.scale(img, entry.getValue());
+			map.put(entry.getKey(), img);
 		}
 
 		BufferedImage t = map.get("bar");
-		BufferedImage scanline = new BufferedImage(PatternPlayer.WIDTH,
-				t.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		for (int i = 0; i <= PatternPlayer.WIDTH / t.getWidth(); i++)
-			scanline.getGraphics().drawImage(t, i * t.getWidth(), 0, null);
-
-		map.put("scanline", scanline);
+		map.put("scanline",
+				ImageUtil.scale(t, NoteChartPlayer.WIDTH, t.getHeight()));
 
 	}
 
@@ -115,7 +52,7 @@ public class SpriteLibrary {
 		if (map.containsKey("flip_" + str))
 			return map.get("flip_" + str);
 		else {
-			BufferedImage img = ImageUtil.flip(map.get(str));
+			BufferedImage img = ImageUtil.flipV(map.get(str));
 			map.put("flip_" + str, img);
 			return img;
 		}

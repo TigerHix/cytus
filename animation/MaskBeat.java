@@ -17,12 +17,12 @@ public class MaskBeat extends Sprite {
 	public void paint(Graphics2D g, double time) {
 		double pos = ((time + pshift) % beat) / beat;
 		double size = 0.7 + 0.3 * Math.max(Math.cos(pos * Math.PI * 2), 0);
-		g.drawImage(img, 0, PatternPlayer.HEIGHT / 10,
-				(int) (img.getWidth() * size), PatternPlayer.HEIGHT * 9 / 10,
+		g.drawImage(img, 0, NoteChartPlayer.HEIGHT / 10,
+				(int) (img.getWidth() * size), NoteChartPlayer.HEIGHT * 9 / 10,
 				null);
-		g.drawImage(img, PatternPlayer.WIDTH, PatternPlayer.HEIGHT / 10,
-				PatternPlayer.WIDTH - (int) (img.getWidth() * size),
-				PatternPlayer.HEIGHT, 0, 0, img.getWidth(), img.getHeight(),
+		g.drawImage(img, NoteChartPlayer.WIDTH, NoteChartPlayer.HEIGHT / 10,
+				NoteChartPlayer.WIDTH - (int) (img.getWidth() * size),
+				NoteChartPlayer.HEIGHT, 0, 0, img.getWidth(), img.getHeight(),
 				null);
 	}
 }

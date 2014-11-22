@@ -10,7 +10,7 @@ public class Circle extends Note {
 	Sprite circle = null, nact = null, nearadd = null;;
 	Animation shadow = null;
 
-	public Circle(PatternPlayer p, int id, int x, int y, double time) {
+	public Circle(NoteChartPlayer p, int id, int x, int y, double time) {
 		this.p = p;
 		this.id = id;
 		this.x = x;
@@ -30,48 +30,51 @@ public class Circle extends Note {
 		double ntime1 = time - p.beat;
 		double ntime2 = page * p.beat - p.pshift;
 
-		switch (PatternPlayer.prefs.get("popupmode")) {
+		switch (NoteChartPlayer.prefs.get("popupmode")) {
 		case 1:// Default
-			circle.addTransform(new LinearAlphaTransform(ntime1, ntime1
-					+ p.beat / 2, 0, 1));
-			circle.addTransform(new LinearScaleTransform(ntime1, time, 0.5, 1));
-			nearadd.addTransform(new LinearScaleTransform(ntime1, time, 0.5, 1));
-			nact.addTransform(new LinearAlphaTransform(ntime1, ntime1 + p.beat
-					/ 2, 0, 0.8));
-			nact.addTransform(new LinearScaleTransform(ntime1, time, 0.5, 1));
+			circle.addTransform(new Transform(Transform.ALPHA,
+					Transform.LINEAR, ntime1, ntime1 + p.beat / 2, 0, 1));
+			circle.addTransform(new Transform(Transform.SCALE,
+					Transform.LINEAR, ntime1, time, 0.5, 1));
+			nearadd.addTransform(new Transform(Transform.SCALE,
+					Transform.LINEAR, ntime1, time, 0.5, 1));
+			nact.addTransform(new Transform(Transform.ALPHA, Transform.LINEAR,
+					ntime1, ntime1 + p.beat / 2, 0, 0.8));
+			nact.addTransform(new Transform(Transform.SCALE, Transform.LINEAR,
+					ntime1, time, 0.5, 1));
 			break;
 
 		case 2:// Grouped
-			circle.addTransform(new LinearAlphaTransform(ntime1, ntime1
-					+ p.beat / 2, 0, 1));
-			circle.addTransform(new LinearScaleTransform(ntime2 - p.beat / 2,
-					ntime2, 0.5, 1));
+			circle.addTransform(new Transform(Transform.ALPHA,
+					Transform.LINEAR, ntime1, ntime1 + p.beat / 2, 0, 1));
+			circle.addTransform(new Transform(Transform.SCALE,
+					Transform.LINEAR, ntime2 - p.beat / 2, ntime2, 0.5, 1));
 			circle.addTransform(new BeatTransform(ntime2, p.pshift, p.beat / 2));
-			nearadd.addTransform(new LinearScaleTransform(ntime2 - p.beat / 2,
-					ntime2, 0.5, 1));
+			nearadd.addTransform(new Transform(Transform.SCALE,
+					Transform.LINEAR, ntime2 - p.beat / 2, ntime2, 0.5, 1));
 			nearadd.addTransform(new BeatTransform(ntime2, p.pshift, p.beat / 2));
-			nact.addTransform(new LinearAlphaTransform(ntime1, ntime1 + p.beat
-					/ 2, 0, 0.8));
-			nact.addTransform(new LinearScaleTransform(ntime2 - p.beat / 2,
-					ntime2, 0.5, 1));
+			nact.addTransform(new Transform(Transform.ALPHA, Transform.LINEAR,
+					ntime1, ntime1 + p.beat / 2, 0, 0.8));
+			nact.addTransform(new Transform(Transform.SCALE, Transform.LINEAR,
+					ntime2 - p.beat / 2, ntime2, 0.5, 1));
 			break;
 
 		default: // None
-			circle.addTransform(new LinearAlphaTransform(ntime1, ntime1
-					+ p.beat / 2, 0, 0.8));
+			circle.addTransform(new Transform(Transform.ALPHA,
+					Transform.LINEAR, ntime1, ntime1 + p.beat / 2, 0, 0.8));
 			circle.addTransform(new BeatTransform(ntime2, p.pshift, p.beat / 2));
 			nearadd.addTransform(new BeatTransform(ntime2, p.pshift, p.beat / 2));
-			nact.addTransform(new LinearAlphaTransform(ntime1, ntime1 + p.beat
-					/ 2, 0, 0.8));
+			nact.addTransform(new Transform(Transform.ALPHA, Transform.LINEAR,
+					ntime1, ntime1 + p.beat / 2, 0, 0.8));
 		}
 
 		shadow = new Animation("beat_shadow", time - p.beat * 0.4,
 				time + 1 / 3.0);
 		shadow.moveTo(x, y);
-		shadow.addTransform(new LinearScaleTransform(time - p.beat * 0.4, time,
-				1, 2, false));
-		shadow.addTransform(new LinearAlphaTransform(time - p.beat * 0.4, time,
-				0.8, 0, false));
+		shadow.addTransform(new Transform(Transform.ALPHA, Transform.LINEAR,
+				time - p.beat * 0.4, time, 0.8, 0, true, false));
+		shadow.addTransform(new Transform(Transform.SCALE, Transform.LINEAR,
+				time - p.beat * 0.4, time, 1, 2, false, false));
 		shadow.play(p);
 	}
 
@@ -86,9 +89,9 @@ public class Circle extends Note {
 			Animation judgeanim = AnimationPreset.get("judge_miss");
 			judgeanim.moveTo(x, y);
 
-			circle.addTransform(new LinearAlphaTransform(p.time,
-					p.time + 1 / 3.0, 1, 0));
-			judgeanim.addChild(circle);
+			circle.addTransform(new Transform(Transform.ALPHA,
+					Transform.LINEAR, p.time, p.time + 1 / 3.0, 1, 0));
+			judgeanim.addChild(circle, true);
 
 			judgeanim.play(p, p.time);
 			p.notes.remove(this);
@@ -98,7 +101,7 @@ public class Circle extends Note {
 			nearadd.paint(g, p.time);
 		if (p.page < page)
 			nact.paint(g, p.time);
-		if (PatternPlayer.prefs.get("showid") == 1) {
+		if (NoteChartPlayer.prefs.get("showid") == 1) {
 			g.setColor(Color.GREEN);
 			g.drawString(String.valueOf(id), x, y);
 			g.setColor(Color.BLACK);
@@ -111,9 +114,12 @@ public class Circle extends Note {
 		Animation judgeanim = null;
 		Animation blow = new Animation(page % 2 == 0 ? "red_blow"
 				: "yellow_blow", time, time + 1 / 6.0);
-		blow.addTransform(new RotateTransform(time, time + 1 / 6.0, 0, -Math.PI));
-		blow.addTransform(new LinearScaleTransform(time, time + 1 / 6.0, 1, 3));
-		blow.addTransform(new LinearAlphaTransform(time, time + 1 / 6.0, 1, 0));
+		blow.addTransform(new Transform(Transform.ROTATION, Transform.LINEAR,
+				time, time + 1 / 6.0, 0, -Math.PI));
+		blow.addTransform(new Transform(Transform.ALPHA, Transform.LINEAR,
+				time, time + 1 / 6.0, 1, 0));
+		blow.addTransform(new Transform(Transform.SCALE, Transform.LINEAR,
+				time, time + 1 / 6.0, 1, 3));
 		blow.moveTo(x, y);
 
 		double d = Math.abs(time - stime);
@@ -138,18 +144,20 @@ public class Circle extends Note {
 		if (d > 0.225) {
 			judgement = 3; // Bad
 			judgeanim = AnimationPreset.get("judge_bad");
-			circle.addTransform(new LinearAlphaTransform(time, time + 1 / 3.0,
-					1, 0));
-			judgeanim.addChild(circle);
+			circle.addTransform(new Transform(Transform.ALPHA,
+					Transform.LINEAR, time, time + 1 / 3.0, 1, 0));
+			judgeanim.addChild(circle, true);
 		}
 		if (expanim != null) { // judgement!=3
 			expanim.moveTo(x, y);
 			expanim.play(p, time);
 			// shadow.clearTransforms();
-			shadow.addTransform(new LinearScaleTransform(time, time + 1 / 3.0,
-					1.6, 1.6, false));
-			shadow.addTransform(new LinearAlphaTransform(time, time + 1 / 3.0,
-					0.8, 0.3, false));
+			shadow.addTransform(new Transform(Transform.SCALE,
+					Transform.LINEAR, time, time + 1 / 3.0, 1.6, 1.6, false,
+					false));
+			shadow.addTransform(new Transform(Transform.ALPHA,
+					Transform.LINEAR, time, time + 1 / 3.0, 0.8, 0.3, false,
+					true));
 		}
 		judgeanim.moveTo(x, y);
 		judgeanim.play(p, time);

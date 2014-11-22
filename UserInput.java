@@ -6,14 +6,14 @@ import java.util.*;
 import javax.swing.event.*;
 
 public class UserInput implements MouseInputListener, KeyListener {
-	PatternPlayer p = null;
-	int x = 0, y = 0, csize = (int) (90 * PatternPlayer.SIZE_FIX),
-			nsize = (int) (68 * PatternPlayer.SIZE_FIX);
+	NoteChartPlayer p = null;
+	int x = 0, y = 0, csize = (int) (90 * NoteChartPlayer.SIZE_FIX),
+			nsize = (int) (68 * NoteChartPlayer.SIZE_FIX);
 	boolean keydown = false;
 
-	public UserInput(PatternPlayer p, Component c) {
+	public UserInput(NoteChartPlayer p, Component c) {
 		this.p = p;
-		switch (PatternPlayer.prefs.get("inputmode")) {
+		switch (NoteChartPlayer.prefs.get("inputmode")) {
 		case 0:
 			for (Note note : p.notes) {
 				if (note instanceof Circle)

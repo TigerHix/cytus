@@ -10,7 +10,7 @@ public class Animation extends Sprite {
 	double len = 1;
 	boolean once = false;
 	String frames[] = null;
-	BufferedImage img[] = null;
+	BufferedImage imgs[] = null;
 
 	protected Animation() {
 	}
@@ -26,10 +26,10 @@ public class Animation extends Sprite {
 		this.len = len / n;
 		this.once = once;
 		this.frames = frames;
-		img = new BufferedImage[n];
+		imgs = new BufferedImage[n];
 
 		for (int i = 0; i < n; i++)
-			img[i] = SpriteLibrary.get(frames[i]);
+			imgs[i] = SpriteLibrary.get(frames[i]);
 	}
 
 	public void paint(Graphics2D g, double time) {
@@ -41,15 +41,15 @@ public class Animation extends Sprite {
 
 		int current = (int) ((time - stime) / len);
 		current %= n;
-		cimg = img[current];
+		img = imgs[current];
 		super.paint(g, time);
 	}
 
-	public void play(PatternPlayer p) {
+	public void play(NoteChartPlayer p) {
 		play(p, stime);
 	}
 
-	public void play(PatternPlayer p, double stime) {
+	public void play(NoteChartPlayer p, double stime) {
 		this.stime = stime;
 		etime = stime + len * n;
 		p.addAnimation(this);
@@ -81,7 +81,7 @@ public class Animation extends Sprite {
 
 	public void flip() {
 		for (int i = 0; i < n; i++) {
-			img[i] = SpriteLibrary.getFlip(frames[i]);
+			imgs[i] = SpriteLibrary.getFlip(frames[i]);
 			frames[i] = "flip_" + frames[i];
 		}
 
@@ -90,14 +90,14 @@ public class Animation extends Sprite {
 
 	public void brighten() {
 		for (int i = 0; i < n; i++) {
-			img[i] = SpriteLibrary.getBrighter(frames[i]);
+			imgs[i] = SpriteLibrary.getBrighter(frames[i]);
 			frames[i] = "bright_" + frames[i];
 		}
 	}
 
 	public void prescale(double s) {
 		for (int i = 0; i < n; i++) {
-			img[i] = SpriteLibrary.getScaledSprite(frames[i], s);
+			imgs[i] = SpriteLibrary.getScaledSprite(frames[i], s);
 			frames[i] += s;
 		}
 	}

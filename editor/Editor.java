@@ -18,20 +18,20 @@ import javax.swing.table.*;
 
 public class Editor extends JFrame implements ActionListener,
 		ListSelectionListener, MouseListener, StateEditable, PopupMenuListener {
-	SimplePatternPlayer spp = null;
+	SimpleNoteChartPlayer spp = null;
 	PreviewWindow pwindow = null;
 	UndoManager manager = null;
 	JMenu m_edit = null;
 	JMenu p_addtogroup = null, m_dgroups = null;
 
-	Pattern pdata = null;
+	NoteChart pdata = null;
 	Timing timing = null;
 	JTable table = null;
-	PatternDataTable model = null;
-	TableRowSorter<PatternDataTable> sorter = null;
+	NoteChartDataTable model = null;
+	TableRowSorter<NoteChartDataTable> sorter = null;
 	DataFilter filter = null;
 
-	LinkedList<Pattern.Note> selection = new LinkedList<Pattern.Note>();
+	LinkedList<NoteChart.Note> selection = new LinkedList<NoteChart.Note>();
 	LinkedList<NoteGroup> groups = new LinkedList<NoteGroup>();
 	HashMap<String, NoteGroup> gnames = new HashMap<String, NoteGroup>();
 
@@ -201,22 +201,22 @@ public class Editor extends JFrame implements ActionListener,
 		BufferedReader in = new BufferedReader(new FileReader("assets/songs/"
 				+ songtitle + "/" + songtitle + ".hard.txt"));
 		if (in.readLine().equals("VERSION 2"))
-			pdata = PatternReader2.read(in);
+			pdata = NoteChartReader2.read(in);
 		else
-			pdata = PatternReader1.read(in);
+			pdata = NoteChartReader1.read(in);
 
 		pdata.offset = pdata.notes.get(0).time;
 		timing = new Timing(pdata.beat, pdata.offset);
 		manager = new UndoManager();
 
-		model = new PatternDataTable();
+		model = new NoteChartDataTable();
 		table = new JTable(model);
 		table.setFocusable(true);
 		table.getSelectionModel().addListSelectionListener(this);
 		table.addMouseListener(this);
 
 		filter = new DataFilter();
-		sorter = new TableRowSorter<PatternDataTable>(model);
+		sorter = new TableRowSorter<NoteChartDataTable>(model);
 		sorter.setRowFilter(filter);
 		for (int i = 0; i < 5; i++)
 			sorter.setSortable(i, false);
@@ -228,7 +228,7 @@ public class Editor extends JFrame implements ActionListener,
 
 		Player player = Manager.createRealizedPlayer(new MediaLocator(new File(
 				"temp.wav").toURI().toURL()));
-		spp = new SimplePatternPlayer(pdata, player);
+		spp = new SimpleNoteChartPlayer(pdata, player);
 		spp.selection = selection; // reference
 
 		pwindow = new PreviewWindow();
@@ -245,7 +245,7 @@ public class Editor extends JFrame implements ActionListener,
 			try {
 				PrintWriter out = new PrintWriter(new FileOutputStream(
 						"out.txt"));
-				new PatternWriter(pdata, out);
+				new NoteChartWriter(pdata, out);
 			} catch (Exception e1) {
 			}
 			break;
@@ -313,7 +313,7 @@ public class Editor extends JFrame implements ActionListener,
 			if (selection.size() < 2)
 				break;
 			boolean check = true;
-			for (Pattern.Note note : selection)
+			for (NoteChart.Note note : selection)
 				if ((note.holdtime != 0) || (note.linkref != -1)) {
 					check = false;
 					break;
@@ -322,9 +322,9 @@ public class Editor extends JFrame implements ActionListener,
 				String mode = (String) JOptionPane.showInputDialog(this,
 						"连接方式", "新建Link", JOptionPane.QUESTION_MESSAGE, null,
 						new String[] { "普通", "填满" }, "普通");
-				Pattern.Link link = pdata.new Link(pdata.links.size());
+				NoteChart.Link link = pdata.new Link(pdata.links.size());
 				if (mode.equals("普通")) {
-					for (Pattern.Note note : selection)
+					for (NoteChart.Note note : selection)
 						link.add(note);
 				} else {
 					int i = 0;
@@ -354,7 +354,7 @@ public class Editor extends JFrame implements ActionListener,
 								.get(i + 1).x;
 						double pos = (t - stime) / (etime - stime);
 						double x = (ex - sx) * pos + sx;
-						Pattern.Note node = pdata.new Note(0, t, x, 0);
+						NoteChart.Note node = pdata.new Note(0, t, x, 0);
 						pdata.notes.add(node);
 						link.add(node);
 						t += pdata.beat / pwindow.ydiv;
@@ -368,7 +368,7 @@ public class Editor extends JFrame implements ActionListener,
 		}
 		case "添加到指定的Link": {
 			boolean check = true;
-			for (Pattern.Note note : selection)
+			for (NoteChart.Note note : selection)
 				if ((note.holdtime != 0) || (note.linkref != -1)) {
 					check = false;
 					break;
@@ -376,31 +376,31 @@ public class Editor extends JFrame implements ActionListener,
 			if (check) {
 				int linkid = Integer.parseInt(JOptionPane.showInputDialog(this,
 						"Link ID"));
-				Pattern.Link link = pdata.links.get(linkid);
-				for (Pattern.Note note : selection)
+				NoteChart.Link link = pdata.links.get(linkid);
+				for (NoteChart.Note note : selection)
 					link.add(note);
 				modified = true;
 			}
 		}
 		case "从Link中移除":
-			for (Pattern.Note note : selection)
+			for (NoteChart.Note note : selection)
 				if (note.linkref != -1) {
-					Pattern.Link link = pdata.links.get(note.linkref);
+					NoteChart.Link link = pdata.links.get(note.linkref);
 					link.remove(note);
 				}
 			modified = true;
 			break;
 		case "解开Link":
-			for (Pattern.Note note : selection)
+			for (NoteChart.Note note : selection)
 				if (note.linkref != -1) {
-					Pattern.Link link = pdata.links.get(note.linkref);
+					NoteChart.Link link = pdata.links.get(note.linkref);
 					link.removeAll();
 				}
 			modified = true;
 			break;
 		case "拆分Link":
 			if ((selection.size() == 1) && (selection.get(0).linkref != -1)) {
-				Pattern.Link link = pdata.links.get(selection.get(0).linkref);
+				NoteChart.Link link = pdata.links.get(selection.get(0).linkref);
 				if (link.n >= 4) {
 					String param[] = JOptionPane.showInputDialog(this,
 							"子Link的node个数(用空格隔开)").split(" ");
@@ -418,10 +418,10 @@ public class Editor extends JFrame implements ActionListener,
 					if (check && (sum == link.n)) {
 						int p = 0;
 						for (int i = 0; i < param.length; i++) {
-							Pattern.Link nlink = pdata.new Link(
+							NoteChart.Link nlink = pdata.new Link(
 									pdata.links.size());
 							for (int j = 0; j < num[i]; j++) {
-								Pattern.Note node = link.nodes.get(p);
+								NoteChart.Note node = link.nodes.get(p);
 								nlink.add(node);
 								p++;
 							}
@@ -451,7 +451,7 @@ public class Editor extends JFrame implements ActionListener,
 		case "水平镜像复制":
 			double axis = Double.parseDouble(JOptionPane.showInputDialog(this,
 					"x对称轴", "0.5"));
-			for (Pattern.Note note : selection)
+			for (NoteChart.Note note : selection)
 				pdata.notes.add(pdata.new Note(0, note.time, 2 * axis - note.x,
 						note.holdtime));
 			modified = true;
@@ -493,7 +493,7 @@ public class Editor extends JFrame implements ActionListener,
 		int rows[] = table.getSelectedRows();
 		for (int i = 0; i < rows.length; i++) {
 			int num = sorter.convertRowIndexToModel(rows[i]);
-			Pattern.Note note = pdata.notes.get(num);
+			NoteChart.Note note = pdata.notes.get(num);
 			if (!selection.contains(note))
 				selection.add(note);
 		}
@@ -505,7 +505,7 @@ public class Editor extends JFrame implements ActionListener,
 
 	public void restoreState(Hashtable<?, ?> state) {
 		System.out.println("restoreState");
-		this.pdata = (Pattern) state.get("pdata");
+		this.pdata = (NoteChart) state.get("pdata");
 		model.fireTableDataChanged();
 	}
 
@@ -637,10 +637,10 @@ public class Editor extends JFrame implements ActionListener,
 			g.drawOval(x - 20, y - 20, 40, 40);
 		}
 
-		public Pattern.Note selectObject(int x, int y) {
+		public NoteChart.Note selectObject(int x, int y) {
 			double min = 40;
-			Pattern.Note result = null;
-			for (Pattern.Note n : pdata.notes)
+			NoteChart.Note result = null;
+			for (NoteChart.Note n : pdata.notes)
 				if ((time + pdata.beat > n.time) && (n.time >= time)) {
 					int nx = spp.calcX(n.x), ny = spp.calcY(n.time);
 					double dist = Math.hypot(nx - x, ny - y);
@@ -743,7 +743,7 @@ public class Editor extends JFrame implements ActionListener,
 			if (e.getButton() == MouseEvent.BUTTON1) {
 				if (!ctrl)
 					selection.clear();
-				Pattern.Note note = selectObject(e.getX(), e.getY());
+				NoteChart.Note note = selectObject(e.getX(), e.getY());
 				if (note != null) {
 					if (!selection.contains(note))
 						selection.add(note);
@@ -773,13 +773,13 @@ public class Editor extends JFrame implements ActionListener,
 		public void mouseDragged(MouseEvent e) {
 			x = e.getX();
 			y = e.getY();
-			Pattern.Note note = selectObject(x, y);
+			NoteChart.Note note = selectObject(x, y);
 			if ((note == null) || (!selection.contains(note)))
 				return;
 
 			StateEdit edit = new StateEdit(Editor.this);
 			int nx = spp.calcX(note.x), ny = spp.calcY(note.time);
-			for (Pattern.Note other : selection)
+			for (NoteChart.Note other : selection)
 				if (other != note) {
 					int ox = spp.calcX(other.x) + x - nx, oy = spp
 							.calcY(other.time) + y - ny;
@@ -797,7 +797,7 @@ public class Editor extends JFrame implements ActionListener,
 		}
 	}
 
-	public class PatternDataTable extends AbstractTableModel {
+	public class NoteChartDataTable extends AbstractTableModel {
 		String colnames[] = new String[] { "NOTE", "time", "x", "holdtime",
 				"linkref" };
 
@@ -810,7 +810,7 @@ public class Editor extends JFrame implements ActionListener,
 		}
 
 		public Object getValueAt(int row, int col) {
-			Pattern.Note n = pdata.notes.get(row);
+			NoteChart.Note n = pdata.notes.get(row);
 			DecimalFormat f = new DecimalFormat("0.000000");
 			switch (col) {
 			case 0:
@@ -837,7 +837,7 @@ public class Editor extends JFrame implements ActionListener,
 		}
 
 		public void setValueAt(Object value, int row, int col) {
-			Pattern.Note n = pdata.notes.get(row);
+			NoteChart.Note n = pdata.notes.get(row);
 			String val = (String) value;
 			StateEdit edit = new StateEdit(Editor.this);
 			switch (col) {
