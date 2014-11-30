@@ -63,6 +63,15 @@ public class ImageUtil {
 		return img;
 	}
 
+	/*
+	 * public static int filterRGB(int rgb1, int rgb2) { int a1 = (rgb1 >> 24) &
+	 * 0xFF; int r1 = (rgb1 >> 16) & 0xFF; int g1 = (rgb1 >> 8) & 0xFF; int b1 =
+	 * rgb1 & 0xFF; int a2 = (rgb2 >> 24) & 0xFF; int r2 = (rgb2 >> 16) & 0xFF;
+	 * int g2 = (rgb2 >> 8) & 0xFF; int b2 = rgb2 & 0xFF; int a = 255 - (255 -
+	 * a1) * (255 - a2) / 255; int r = 255 - (255 - r1) * (255 - r2) / 255; int
+	 * g = 255 - (255 - g1) * (255 - g2) / 255; int b = 255 - (255 - b1) * (255
+	 * - b2) / 255; return (a << 24) | (r << 16) | (g << 8) | b; }
+	 */
 	public static int filterRGB(int rgb1, int rgb2) {
 		int a1 = (rgb1 >> 24) & 0xFF;
 		int r1 = (rgb1 >> 16) & 0xFF;
@@ -72,10 +81,10 @@ public class ImageUtil {
 		int r2 = (rgb2 >> 16) & 0xFF;
 		int g2 = (rgb2 >> 8) & 0xFF;
 		int b2 = rgb2 & 0xFF;
-		int a = 255 - (255 - a1) * (255 - a2) / 255;
-		int r = 255 - (255 - r1) * (255 - r2) / 255;
-		int g = 255 - (255 - g1) * (255 - g2) / 255;
-		int b = 255 - (255 - b1) * (255 - b2) / 255;
+		int a = Math.min(a1 + a2, 255);
+		int r = Math.min(r1 + r2, 255);
+		int g = Math.min(g1 + g2, 255);
+		int b = Math.min(b1 + b2, 255);
 		return (a << 24) | (r << 16) | (g << 8) | b;
 	}
 

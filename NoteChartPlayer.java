@@ -367,6 +367,22 @@ public class NoteChartPlayer {
 				null);
 		gg.drawImage(title, WIDTH / 2 - title.getWidth() / 2, 0, null);
 
+		if (combo > 1) {
+			BufferedImage text = SpriteLibrary.get("combo_small_text");
+			BufferedImage bg = SpriteLibrary.get("combo_small_bg");
+			double scale = pop != null ? pop.scale(time) : 1;
+			int w1 = (int) (250 * SIZE_FIX * scale);
+			gg.drawImage(bg, WIDTH / 2 - w1 / 2, (int) (44 * SIZE_FIX), w1,
+					(int) (28 * SIZE_FIX), null);
+			gg.drawImage(text, (int) (WIDTH / 2 - 110 * SIZE_FIX),
+					(int) (44 * SIZE_FIX), (int) (92 * SIZE_FIX),
+					(int) (27 * SIZE_FIX), null);
+			BufferedImage cp = FontLibrary.getComboSmall(combo);
+			int w2 = (int) (cp.getWidth() * scale), h2 = (int) (cp.getHeight() * scale);
+			gg.drawImage(cp, (int) (WIDTH / 2 + 58 * SIZE_FIX) - w2 / 2,
+					(int) (58 * SIZE_FIX) - h2 / 2, w2, h2, null);
+		}
+
 		if (mask != null)
 			mask.paint(gg, time);
 
@@ -403,22 +419,6 @@ public class NoteChartPlayer {
 		}
 
 		gg.drawImage(line, 0, liney - (int) (24 * SIZE_FIX), null);
-
-		if (combo > 1) {
-			BufferedImage text = SpriteLibrary.get("combo_small_text");
-			BufferedImage bg = SpriteLibrary.get("combo_small_bg");
-			double scale = pop != null ? pop.scale(time) : 1;
-			int w1 = (int) (250 * SIZE_FIX * scale);
-			gg.drawImage(bg, WIDTH / 2 - w1 / 2, (int) (44 * SIZE_FIX), w1,
-					(int) (28 * SIZE_FIX), null);
-			gg.drawImage(text, (int) (WIDTH / 2 - 110 * SIZE_FIX),
-					(int) (44 * SIZE_FIX), (int) (92 * SIZE_FIX),
-					(int) (27 * SIZE_FIX), null);
-			BufferedImage cp = FontLibrary.getComboSmall(combo);
-			int w2 = (int) (cp.getWidth() * scale), h2 = (int) (cp.getHeight() * scale);
-			gg.drawImage(cp, (int) (WIDTH / 2 + 58 * SIZE_FIX) - w2 / 2,
-					(int) (58 * SIZE_FIX) - h2 / 2, w2, h2, null);
-		}
 
 		BufferedImage sp = FontLibrary.getScore(score);
 		gg.drawImage(sp, WIDTH - sp.getWidth(), HEIGHT / 50, null);
